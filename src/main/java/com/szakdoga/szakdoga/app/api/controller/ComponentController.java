@@ -3,6 +3,7 @@ package com.szakdoga.szakdoga.app.api.controller;
 import com.szakdoga.szakdoga.app.dto.ComponentDto;
 import com.szakdoga.szakdoga.app.mapper.ComponentMapper;
 import com.szakdoga.szakdoga.app.repository.entity.Component;
+import com.szakdoga.szakdoga.app.repository.entity.Webshop;
 import com.szakdoga.szakdoga.app.service.ComponentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -47,9 +48,9 @@ public class ComponentController {
        return componentService.getCheapestWebshopPrice(componentId);
     }*/
 
-    /*@GetMapping("/cheap/name/{componentId}")
-    public List<Webshop> cheapestWebshopName(@PathVariable Long componentId){
+    @GetMapping("/cheap/name/{componentId}")
+    public Webshop cheapestWebshopName(@PathVariable Long componentId){
         return componentService.getCheapestWebshopData(componentId);
-    }*/
+    }
 
 }

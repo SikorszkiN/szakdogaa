@@ -53,7 +53,7 @@ public class ComponentService {
         }
     }
 
-    private Integer getCheapestWebshopPrice(List<Webshop> webshops){
+    public Integer getCheapestWebshopPrice(List<Webshop> webshops){
        return webshops.stream()
                     .map(Webshop::getPrice)
                     .min(Integer::compareTo)
