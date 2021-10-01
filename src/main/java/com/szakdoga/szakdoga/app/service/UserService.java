@@ -1,5 +1,7 @@
 package com.szakdoga.szakdoga.app.service;
 
+import com.szakdoga.szakdoga.app.dto.UserDto;
+import com.szakdoga.szakdoga.app.exception.NoEntityException;
 import com.szakdoga.szakdoga.app.mapper.UserMapper;
 import com.szakdoga.szakdoga.app.repository.entity.Product;
 import com.szakdoga.szakdoga.app.repository.entity.User;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -57,13 +60,16 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public User saveUser(User user){
+    public User saveUser(UserDto userDto){
+
+        User user = userMapper.userDtoToUser(userDto);
         return userRepository.save(user);
     }
 
+    @Transactional
     public void saveUserProduct(Long userId, Long productId){
-        User user = userRepository.findById(userId).orElseThrow(); // Optional
-        Product product = productRepository.findById(productId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(()-> new NoEntityException("Nem található a komponens")); // Optional
+        Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
 
         user.getProductsToUser().add(product);
     }

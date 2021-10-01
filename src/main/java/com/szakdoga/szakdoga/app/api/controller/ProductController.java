@@ -45,7 +45,6 @@ public class ProductController {
         return ResponseEntity.ok(productService.saveProduct(productDto));
     }
 
-    @Transactional
     @PostMapping("/{productId}/component/{componentId}")
     public void saveProductComponent(@PathVariable Long productId, @PathVariable Long componentId){
         productService.saveProductComponent(productId, componentId);

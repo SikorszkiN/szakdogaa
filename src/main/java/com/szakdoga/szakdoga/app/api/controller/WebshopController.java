@@ -21,6 +21,6 @@ public class WebshopController {
 
     @PostMapping("/save")
     public ResponseEntity<Webshop> saveWebshop(@RequestBody WebshopDto webshopDto){
-        return ResponseEntity.ok(webshopService.saveWebshop(webshopMapper.webshopDtoToWebshop(webshopDto)));
+        return ResponseEntity.ok(webshopService.saveWebshop(webshopDto));
     }
 }

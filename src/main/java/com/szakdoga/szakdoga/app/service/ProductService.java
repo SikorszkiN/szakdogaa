@@ -1,6 +1,7 @@
 package com.szakdoga.szakdoga.app.service;
 
 import com.szakdoga.szakdoga.app.dto.ProductDto;
+import com.szakdoga.szakdoga.app.exception.NoEntityException;
 import com.szakdoga.szakdoga.app.mapper.ProductMapper;
 import com.szakdoga.szakdoga.app.repository.entity.Component;
 import com.szakdoga.szakdoga.app.repository.entity.Product;
@@ -9,8 +10,10 @@ import com.szakdoga.szakdoga.app.repository.ProductRepository;
 import com.szakdoga.szakdoga.app.repository.entity.Webshop;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -34,24 +37,27 @@ public class ProductService {
 
     public ProductDto saveProduct(ProductDto productDto){
         //lecsekkolni hogy létezik-e
-        if (productRepository.findByName(productDto.getName()).equals(productDto.getName())){
-            return productDto;
-        }else {
-            Product product = productMapper.productDtoToProduct(productDto);
-            return productMapper.productToProductDto(productRepository.save(product));
+        Product product = productMapper.productDtoToProduct(productDto);
+        List<Product> products = findByNAme(product.getName());
+        for(var p : products){
+            if (p.getName().equals(product.getName())){
+                throw new NoEntityException("Ez az elem már megtalálható az adatbázisban");
+            }
         }
+        return productMapper.productToProductDto(productRepository.save(product));
     }
 
+    @Transactional
     public void saveProductComponent(Long productId, Long componentId){
-        Product product = productRepository.findById(productId).orElseThrow(); //Optional
-        Component component = componentRepository.findById(componentId).orElseThrow();
+        Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a komponens")); //Optional
+        Component component = componentRepository.findById(componentId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
 
         product.getComponents().add(component);
     }
 
     //Kiszámolja egy product árát
     public int getProductPrice(Long productId){
-        Product product = productRepository.findById(productId).orElseThrow();
+        Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
 
         return product.getComponents()
                 .stream().map(component -> component.getWebshops()
@@ -61,7 +67,7 @@ public class ProductService {
     }
 
     public void deleteProduct(Long productId){
-        Product product = productRepository.findById(productId).orElseThrow();
+        Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
 
         productRepository.delete(product);
     }

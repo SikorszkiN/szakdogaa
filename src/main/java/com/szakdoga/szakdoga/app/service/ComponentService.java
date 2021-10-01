@@ -1,6 +1,8 @@
 package com.szakdoga.szakdoga.app.service;
 
+import com.szakdoga.szakdoga.app.dto.ComponentDto;
 import com.szakdoga.szakdoga.app.exception.NoEntityException;
+import com.szakdoga.szakdoga.app.mapper.ComponentMapper;
 import com.szakdoga.szakdoga.app.repository.WebshopRepository;
 import com.szakdoga.szakdoga.app.repository.entity.Component;
 import com.szakdoga.szakdoga.app.repository.ComponentRepository;
@@ -21,14 +23,20 @@ import java.util.stream.Collectors;
 public class ComponentService {
 
     private final ComponentRepository componentRepository;
+
     private final WebshopService webshopService;
+
     private final WebshopRepository webshopRepository;
+
+    ComponentMapper componentMapper = new ComponentMapper();
+
 
     public List<Component> findAll(){
         return componentRepository.findAll();
     }
 
-    public Component saveComponent(Component component){
+    public Component saveComponent(ComponentDto componentDto){
+        Component component = componentMapper.componentDtoToComponent(componentDto);
         return componentRepository.save(component);
     }
 
@@ -38,14 +46,15 @@ public class ComponentService {
 
     @Transactional
     public void addWebshopToComponent(Long componentId, Long webshopId){
-        Component component = componentRepository.findById(componentId).orElseThrow();
+        Component component = componentRepository.findById(componentId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
         Webshop webshop = webshopRepository.findById(webshopId).orElseThrow();
 
         component.getWebshops().add(webshop);
     }
 
+    @Transactional
     public void WebshopsToComponent(Long componentId, String name){
-        Component component = componentRepository.findById(componentId).orElseThrow();
+        Component component = componentRepository.findById(componentId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
         List<Webshop> webshopsByName = webshopService.findAllByName(name);
 
         for(var webshop : webshopsByName){
@@ -53,7 +62,7 @@ public class ComponentService {
         }
     }
 
-    public Integer getCheapestWebshopPrice(List<Webshop> webshops){
+    private Integer getCheapestWebshopPrice(List<Webshop> webshops){
        return webshops.stream()
                     .map(Webshop::getPrice)
                     .min(Integer::compareTo)

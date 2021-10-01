@@ -13,7 +13,6 @@ public class WebshopMapper {
     public WebshopDto webshopToWebshopDtop(Webshop webshop){
         WebshopDto webshopDto = new WebshopDto();
 
-        webshopDto.setId(webshop.getId());
         webshopDto.setName(webshop.getName());
         webshopDto.setAvailability(webshop.isAvailability());
         webshopDto.setPrice(webshopDto.getPrice());
@@ -26,7 +25,6 @@ public class WebshopMapper {
     public Webshop webshopDtoToWebshop(WebshopDto webshopDto){
        Webshop webshop = new Webshop();
 
-       webshop.setId(webshopDto.getId());
        webshop.setName(webshopDto.getName());
        webshop.setAvailability(webshopDto.isAvailability());
        webshop.setPrice(webshopDto.getPrice());

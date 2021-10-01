@@ -15,7 +15,6 @@ public class ComponentMapper {
     public ComponentDto componentToComponentDto(Component component){
         ComponentDto componentDto = new ComponentDto();
 
-        componentDto.setId(component.getId());
         componentDto.setName(component.getName());
 
         //return modelMapper.map(component, ComponentDto.class);
@@ -26,7 +25,6 @@ public class ComponentMapper {
     public Component componentDtoToComponent(ComponentDto componentDto){
         Component component = new Component();
 
-        component.setId(componentDto.getId());
         component.setName(componentDto.getName());
         return component;
     }

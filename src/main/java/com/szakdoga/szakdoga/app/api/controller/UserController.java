@@ -26,10 +26,9 @@ public class UserController {
 
     @PostMapping("/save")
     public ResponseEntity<User> saveUser(@RequestBody UserDto userDto){
-        return ResponseEntity.ok(userService.saveUser(userMapper.userDtoToUser(userDto)));
+        return ResponseEntity.ok(userService.saveUser(userDto));
     }
 
-    @Transactional
     @PostMapping("{userId}/products/{productId}")
     public void saveProductComponent(@PathVariable Long userId, @PathVariable Long productId){
         userService.saveUserProduct(userId, productId);

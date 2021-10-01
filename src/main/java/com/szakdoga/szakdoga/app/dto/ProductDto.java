@@ -9,8 +9,6 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class ProductDto {
-  /*  @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;*/
     @NotBlank
     private String name;
 }
