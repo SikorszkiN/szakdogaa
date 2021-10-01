@@ -61,8 +61,8 @@ public class ComponentServiceTest {
 
         //When
 
-      //  Mockito.when(componentService.getCheapestWebshopData(component.getId())).thenReturn();
-      //  Webshop webshop = componentService.getCheapestWebshopData(1L);
+        Mockito.when(componentService.getCheapestWebshopData(component.getId())).thenReturn();
+        Webshop webshop = componentService.getCheapestWebshopData(1L);
 
 
         //Then
