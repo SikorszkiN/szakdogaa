@@ -15,7 +15,8 @@ public class WebshopMapper {
 
         webshopDto.setName(webshop.getName());
         webshopDto.setAvailability(webshop.isAvailability());
-        webshopDto.setPrice(webshopDto.getPrice());
+        webshopDto.setLink(webshop.getLink());
+       /* webshop.setPrice(webshopDto.getPrice());*/
         webshopDto.setDeliveryTime(webshop.getDeliveryTime());
 
         return webshopDto;
@@ -27,7 +28,8 @@ public class WebshopMapper {
 
        webshop.setName(webshopDto.getName());
        webshop.setAvailability(webshopDto.isAvailability());
-       webshop.setPrice(webshopDto.getPrice());
+       webshop.setLink(webshopDto.getLink());
+       /*webshop.setPrice(webshopDto.getPrice());*/
        webshop.setDeliveryTime(webshopDto.getDeliveryTime());
 
        return webshop;

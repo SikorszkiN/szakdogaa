@@ -46,8 +46,8 @@ public class ComponentServiceTest {
 
     @BeforeAll
     static void init() {
-        ws1 = new Webshop(1L, "webshop1", 5000, 5, true);
-        ws2 = new Webshop(2L, "webshop2", 4000, 5, true);
+        ws1 = new Webshop(1L, "webshop1","emag.hu", 5000, 5, true);
+        ws2 = new Webshop(2L, "webshop2","emag.hu", 4000, 5, true);
         List<Webshop> webshops = new ArrayList<>();
         webshops.add(ws1);
         webshops.add(ws2);

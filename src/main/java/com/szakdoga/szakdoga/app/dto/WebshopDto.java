@@ -1,6 +1,7 @@
 package com.szakdoga.szakdoga.app.dto;
 
 import lombok.Data;
+import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 
@@ -9,7 +10,9 @@ public class WebshopDto {
 
     @NotBlank
     private String name;
-    private int price;
+    private String link;
+/*    @NotBlank
+    private int price;*/
     private int deliveryTime;
     private boolean availability;
 
