@@ -4,8 +4,7 @@ import com.szakdoga.szakdoga.app.dto.WebshopDto;
 import com.szakdoga.szakdoga.app.mapper.WebshopMapper;
 import com.szakdoga.szakdoga.app.repository.WebshopRepository;
 import com.szakdoga.szakdoga.app.repository.entity.Webshop;
-import com.szakdoga.szakdoga.app.webscrape.Emag;
-import com.szakdoga.szakdoga.app.webscrape.GoldDekor;
+import com.szakdoga.szakdoga.app.dto.Selectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +19,13 @@ public class WebshopService {
 
     private final WebshopMapper webshopMapper;
 
-    private final Emag emag;
+    private final Selectors selectors;
 
-    private final GoldDekor goldDekor;
+    private final WebScrapeService webScrapeService;
 
     public Webshop saveWebshop(WebshopDto webshopDto){
         Webshop webshop = webshopMapper.webshopDtoToWebshop(webshopDto);
-        webshop.setPrice(goldDekor.priceWebScrape(webshopDto.getLink()));
+        webshop.setPrice(webScrapeService.getPrice(webshopDto.getLink(), selectors.getEmagSelector()));
         return webshopRepository.save(webshop);
     }
 

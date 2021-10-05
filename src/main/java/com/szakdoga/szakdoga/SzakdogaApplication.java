@@ -2,8 +2,6 @@ package com.szakdoga.szakdoga;
 
 import com.szakdoga.szakdoga.app.repository.ProductRepository;
 import com.szakdoga.szakdoga.app.repository.UserRepository;
-import com.szakdoga.szakdoga.app.repository.entity.Component;
-import com.szakdoga.szakdoga.app.webscrape.GoldDekor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;

@@ -4,9 +4,6 @@ import com.szakdoga.szakdoga.app.dto.ComponentDto;
 import com.szakdoga.szakdoga.app.repository.entity.Component;
 import org.modelmapper.ModelMapper;
 
-
-
-
 @org.springframework.stereotype.Component
 public class ComponentMapper {
 
