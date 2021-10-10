@@ -1,6 +1,6 @@
 package com.szakdoga.szakdoga.app.repository;
 
-import com.szakdoga.szakdoga.app.repository.entity.User;
+import com.szakdoga.szakdoga.app.repository.entity.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,17 +11,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<AppUser, Long> {
 
-    Optional<User> findByEmail(String email);
+    Optional<AppUser> findByEmail(String email);
 
-    List<User> findAll();
+    List<AppUser> findAll();
 
     //User findUserByFirstName(String name);
 
     @Transactional
     @Modifying
-    @Query("UPDATE User u " +
+    @Query("UPDATE AppUser u " +
             "SET u.enabled = TRUE WHERE u.email = ?1")
     int enableUser(String email);
 

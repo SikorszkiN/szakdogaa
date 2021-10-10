@@ -7,8 +7,6 @@ import org.modelmapper.ModelMapper;
 @org.springframework.stereotype.Component
 public class ComponentMapper {
 
-    private ModelMapper modelMapper;
-
     public ComponentDto componentToComponentDto(Component component){
         ComponentDto componentDto = new ComponentDto();
 

@@ -1,12 +1,14 @@
 package com.szakdoga.szakdoga.app.service;
 
 import com.szakdoga.szakdoga.app.dto.ComponentDto;
+import com.szakdoga.szakdoga.app.exception.ApiRequestException;
 import com.szakdoga.szakdoga.app.exception.NoEntityException;
 import com.szakdoga.szakdoga.app.mapper.ComponentMapper;
-import com.szakdoga.szakdoga.app.repository.WebshopRepository;
+import com.szakdoga.szakdoga.app.repository.WebshopProductRepository;
 import com.szakdoga.szakdoga.app.repository.entity.Component;
 import com.szakdoga.szakdoga.app.repository.ComponentRepository;
 import com.szakdoga.szakdoga.app.repository.entity.Webshop;
+import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,18 +17,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ComponentService {
 
     private final ComponentRepository componentRepository;
 
-    private final WebshopService webshopService;
+    private final WebshopProductService webshopProductService;
 
-    private final WebshopRepository webshopRepository;
+    private final WebshopProductRepository webshopProductRepository;
 
     ComponentMapper componentMapper = new ComponentMapper();
 
@@ -45,37 +45,37 @@ public class ComponentService {
     }
 
     @Transactional
-    public void addWebshopToComponent(Long componentId, Long webshopId){
-        Component component = componentRepository.findById(componentId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
-        Webshop webshop = webshopRepository.findById(webshopId).orElseThrow();
+    public void addWebshopProductToComponent(Long componentId, Long webshopId){
+        Component component = componentRepository.findById(componentId).orElseThrow(()-> new ApiRequestException("Component not found!"));
+        WebshopProduct webshopProduct = webshopProductRepository.findById(webshopId).orElseThrow();
 
-        component.getWebshops().add(webshop);
+        component.getWebshopProducts().add(webshopProduct);
     }
 
     @Transactional
     public void WebshopsToComponent(Long componentId, String name){
-        Component component = componentRepository.findById(componentId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
-        List<Webshop> webshopsByName = webshopService.findAllByName(name);
+        Component component = componentRepository.findById(componentId).orElseThrow(()-> new ApiRequestException("Component not found!"));
+        List<WebshopProduct> webshopProductsByName = webshopProductService.findAllByName(name);
 
-        for(var webshop : webshopsByName){
-            component.getWebshops().add(webshop);
+        for(var webshop : webshopProductsByName){
+            component.getWebshopProducts().add(webshop);
         }
     }
 
-    private Integer getCheapestWebshopPrice(List<Webshop> webshops){
+    private Integer getCheapestWebshopPrice(List<WebshopProduct> webshops){
        return webshops.stream()
-                    .map(Webshop::getPrice)
+                    .map(WebshopProduct::getPrice)
                     .min(Integer::compareTo)
                     .orElse(0);
     }
 
-    public Webshop getCheapestWebshopData(Long componentId){
-        Component component = componentRepository.findById(componentId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
+    public WebshopProduct getCheapestWebshopData(Long componentId){
+        Component component = componentRepository.findById(componentId).orElseThrow(()-> new ApiRequestException("Component not found!"));
 
-        return component.getWebshops().stream()
-                .filter(Webshop::isAvailability)
-                .filter(webshop -> webshop.getPrice() == (getCheapestWebshopPrice(component.getWebshops())))
-                .min(Comparator.comparing(Webshop::getDeliveryTime, Integer::compareTo))
+        return component.getWebshopProducts().stream()
+                .filter(WebshopProduct::isAvailability)
+                .filter(webshop -> webshop.getPrice() == (getCheapestWebshopPrice(component.getWebshopProducts())))
+                .min(Comparator.comparing(WebshopProduct::getDeliveryTime, Integer::compareTo))
                 .orElseThrow(() -> new NoEntityException("majd ezt az exceptiont át kell írni"));
     }
 

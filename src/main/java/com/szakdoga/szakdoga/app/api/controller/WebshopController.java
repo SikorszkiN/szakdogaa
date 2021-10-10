@@ -1,9 +1,11 @@
 package com.szakdoga.szakdoga.app.api.controller;
 
-import com.szakdoga.szakdoga.app.dto.WebshopDto;
-import com.szakdoga.szakdoga.app.mapper.WebshopMapper;
+import com.szakdoga.szakdoga.app.dto.WebshopProductDto;
+import com.szakdoga.szakdoga.app.mapper.WebshopProductMapper;
+import com.szakdoga.szakdoga.app.repository.WebshopProductRepository;
 import com.szakdoga.szakdoga.app.repository.entity.Webshop;
-import com.szakdoga.szakdoga.app.service.WebshopService;
+import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
+import com.szakdoga.szakdoga.app.service.WebshopProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,14 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/webshop")
+@RequestMapping("/api/webshopprodcut")
 public class WebshopController {
 
-    private final WebshopService webshopService;
-    private final WebshopMapper webshopMapper;
+    private final WebshopProductService webshopProductService;
 
     @PostMapping("/save")
-    public ResponseEntity<Webshop> saveWebshop(@RequestBody WebshopDto webshopDto){
-        return ResponseEntity.ok(webshopService.saveWebshop(webshopDto));
+    public ResponseEntity<WebshopProduct> saveWebshop(@RequestBody WebshopProductDto webshopProductDto){
+        return ResponseEntity.ok(webshopProductService.saveWebshop(webshopProductDto));
     }
 }

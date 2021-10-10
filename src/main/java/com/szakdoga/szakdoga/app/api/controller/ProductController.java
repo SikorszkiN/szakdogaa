@@ -1,6 +1,7 @@
 package com.szakdoga.szakdoga.app.api.controller;
 
 import com.szakdoga.szakdoga.app.dto.ProductDto;
+import com.szakdoga.szakdoga.app.exception.ApiRequestException;
 import com.szakdoga.szakdoga.app.mapper.ProductMapper;
 import com.szakdoga.szakdoga.app.repository.entity.Product;
 import com.szakdoga.szakdoga.app.api.request.ProductRequest;
@@ -26,18 +27,22 @@ public class ProductController {
     private final ProductMapper productMapper;
 
     @GetMapping("/findall")
-    public List<Product> allProducts(){
-        return productService.findAll();
+    public ResponseEntity<List<Product>> allProducts(){
+        return ResponseEntity.ok(productService.findAll());
     }
 
     @GetMapping("/findbyid/{productId}")
     public ResponseEntity<Product> findProductById(@PathVariable Long productId){
-        return ResponseEntity.ok(productService.findById(productId));
+        try {
+            return ResponseEntity.ok(productService.findById(productId));
+        }catch (Exception e){
+            throw new ApiRequestException("Product not found");
+        }
     }
 
     @GetMapping("/productprice/{productId}")
-    public int getProductPrice(@PathVariable Long productId){
-        return productService.getProductPrice(productId);
+    public ResponseEntity<Integer> getProductPrice(@PathVariable Long productId){
+        return ResponseEntity.ok(productService.getProductPrice(productId));
     }
 
     @PostMapping("/save")
@@ -51,11 +56,11 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{productId}")
-    public Map<String, Boolean> deleteProduct(@PathVariable @Valid Long productId){
+    public ResponseEntity<Map<String, Boolean>> deleteProduct(@PathVariable @Valid Long productId){
         productService.deleteProduct(productId);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
-        return response;
+        return ResponseEntity.ok(response);
     }
 
 

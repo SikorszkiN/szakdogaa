@@ -7,6 +7,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -19,14 +20,8 @@ public class Webshop {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, unique = true)
     private String name;
-    @Length(max = 1000)
-    private String link;
-    private int price;
-    private int deliveryTime;
-    private boolean availability;
-
-    /*@ManyToMany(mappedBy = "webshops")
-    private List<Component> components;*/
+    private String priceSelector;
 
 }

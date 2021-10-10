@@ -1,9 +1,9 @@
 package com.szakdoga.szakdoga.app.api.controller;
 
 import com.szakdoga.szakdoga.app.dto.ComponentDto;
-import com.szakdoga.szakdoga.app.mapper.ComponentMapper;
 import com.szakdoga.szakdoga.app.repository.entity.Component;
 import com.szakdoga.szakdoga.app.repository.entity.Webshop;
+import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import com.szakdoga.szakdoga.app.service.ComponentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,7 @@ public class ComponentController {
 
     @PostMapping("/{componentId}/webshop/{webshopId}")
     public String saveWebshopToComponent(@PathVariable Long componentId, @PathVariable Long webshopId){
-        componentService.addWebshopToComponent(componentId, webshopId);
+        componentService.addWebshopProductToComponent(componentId, webshopId);
         return "Talán sikerült  egy webshopot a komponenshez";
     }
 
@@ -41,7 +41,7 @@ public class ComponentController {
     }
 
     @GetMapping("/cheap/name/{componentId}")
-    public Webshop cheapestWebshopName(@PathVariable Long componentId){
+    public WebshopProduct cheapestWebshopName(@PathVariable Long componentId){
         return componentService.getCheapestWebshopData(componentId);
     }
 

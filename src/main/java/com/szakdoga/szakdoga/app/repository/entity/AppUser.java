@@ -11,15 +11,12 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-
-//UserMapper -> átalakítja a usert userdto-ra és vissza
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails {
+public class AppUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,14 +26,14 @@ public class User implements UserDetails {
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private UserRole userRole = UserRole.ADMIN;
     private Boolean locked = false;
     private Boolean enabled = true;
 
     @OneToMany(targetEntity = Product.class, cascade = CascadeType.ALL)
     private List<Product> productsToUser;
 
-    public User(String firstName, String lastName, String email, String password, UserRole userRole) {
+    public AppUser(String firstName, String lastName, String email, String password, UserRole userRole) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

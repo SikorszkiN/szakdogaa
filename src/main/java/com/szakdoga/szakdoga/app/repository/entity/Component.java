@@ -23,10 +23,10 @@ public class Component {
     private String name;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "component_webshop",
+    @JoinTable(name = "component_webshopProduct",
             joinColumns = {@JoinColumn(name = "component_id")},
-            inverseJoinColumns = {@JoinColumn(name="webshop_id")})
-    private List<Webshop> webshops = new ArrayList<>();
+            inverseJoinColumns = {@JoinColumn(name="webshop_Product_id")})
+    private List<WebshopProduct> webshopProducts = new ArrayList<>();
 
     @ManyToMany(mappedBy = "components")
     private List<Product> products = new ArrayList<>();

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductMapper {
 
-    private ModelMapper modelMapper;
 
     public ProductDto productToProductDto(Product product){
         ProductDto productDto = new ProductDto();
@@ -17,7 +16,6 @@ public class ProductMapper {
         productDto.setName(product.getName());
 
         return productDto;
-       // return modelMapper.map(product, ProductDto.class);
     }
 
     public Product productDtoToProduct(ProductDto productDto){
@@ -27,6 +25,5 @@ public class ProductMapper {
         product.setName(productDto.getName());
 
         return product;
-        //return modelMapper.map(productDto, Product.class);
     }
 }

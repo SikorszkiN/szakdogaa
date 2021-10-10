@@ -1,6 +1,6 @@
 package com.szakdoga.szakdoga.security.registration;
 
-import com.szakdoga.szakdoga.app.repository.entity.User;
+import com.szakdoga.szakdoga.app.repository.entity.AppUser;
 import com.szakdoga.szakdoga.app.repository.entity.UserRole;
 import com.szakdoga.szakdoga.app.service.UserService;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ public class RegistrationService {
             throw new IllegalStateException("Email not valid");
         }
         return userService.signUpUser(
-                new User(
+                new AppUser(
                         request.getFirstName(),
                         request.getLastName(),
                         request.getEmail(),

@@ -1,43 +1,34 @@
 package com.szakdoga.szakdoga.app.mapper;
 
-import com.szakdoga.szakdoga.app.dto.UserDto;
-import com.szakdoga.szakdoga.app.repository.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.modelmapper.ModelMapper;
+import com.szakdoga.szakdoga.app.dto.AppUserDto;
+import com.szakdoga.szakdoga.app.repository.entity.AppUser;
 import org.springframework.stereotype.Component;
 
 @Component
-@NoArgsConstructor
-@AllArgsConstructor
 public class UserMapper {
 
-    private ModelMapper modelMapper;
+    public AppUserDto userToUserDto(AppUser appUser){
 
-    public UserDto userToUserDto(User user){
+        AppUserDto appUserDto = new AppUserDto();
 
-        UserDto userDto = new UserDto();
+        appUserDto.setFirstName(appUser.getFirstName());
+        appUserDto.setLastName(appUser.getLastName());
+        appUserDto.setEmail(appUser.getEmail());
+        appUserDto.setPassword(appUser.getPassword());
 
-        userDto.setFirstName(user.getFirstName());
-        userDto.setLastName(user.getLastName());
-        userDto.setEmail(user.getEmail());
-        userDto.setPasssword(user.getPassword());
-
-        return userDto;
-       // return modelMapper.map(user, UserDto.class);
+        return appUserDto;
     }
 
-    public User userDtoToUser(UserDto userDto){
+    public AppUser userDtoToUser(AppUserDto appUserDto){
 
-        User user = new User();
+        AppUser appUser = new AppUser();
 
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPasssword());
+        appUser.setFirstName(appUserDto.getFirstName());
+        appUser.setLastName(appUserDto.getLastName());
+        appUser.setEmail(appUserDto.getEmail());
+        appUser.setPassword(appUserDto.getPassword());
 
-        return user;
-      //  return modelMapper.map(userDto, User.class);
+        return appUser;
     }
 
 }

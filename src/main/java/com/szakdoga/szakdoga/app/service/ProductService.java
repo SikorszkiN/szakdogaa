@@ -1,6 +1,7 @@
 package com.szakdoga.szakdoga.app.service;
 
 import com.szakdoga.szakdoga.app.dto.ProductDto;
+import com.szakdoga.szakdoga.app.exception.DuplicateRecordException;
 import com.szakdoga.szakdoga.app.exception.NoEntityException;
 import com.szakdoga.szakdoga.app.mapper.ProductMapper;
 import com.szakdoga.szakdoga.app.repository.entity.Component;
@@ -8,12 +9,12 @@ import com.szakdoga.szakdoga.app.repository.entity.Product;
 import com.szakdoga.szakdoga.app.repository.ComponentRepository;
 import com.szakdoga.szakdoga.app.repository.ProductRepository;
 import com.szakdoga.szakdoga.app.repository.entity.Webshop;
+import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +42,7 @@ public class ProductService {
         List<Product> products = findByNAme(product.getName());
         for(var p : products){
             if (p.getName().equals(product.getName())){
-                throw new NoEntityException("Ez az elem már megtalálható az adatbázisban");
+                throw new DuplicateRecordException("Ez az elem már megtalálható az adatbázisban");
             }
         }
         return productMapper.productToProductDto(productRepository.save(product));
@@ -60,8 +61,8 @@ public class ProductService {
         Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
 
         return product.getComponents()
-                .stream().map(component -> component.getWebshops()
-                        .stream().map(Webshop::getPrice)
+                .stream().map(component -> component.getWebshopProducts()
+                        .stream().map(WebshopProduct::getPrice)
                         .min(Integer::compareTo)
                         .orElse(0)).reduce(0, Integer::sum);
     }

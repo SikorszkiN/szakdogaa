@@ -9,8 +9,10 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
+@EnableTransactionManagement
 public class SzakdogaApplication implements ApplicationRunner {
 
     UserRepository userRepository;
@@ -21,11 +23,6 @@ public class SzakdogaApplication implements ApplicationRunner {
     public SzakdogaApplication(UserRepository userRepository, ProductRepository productRepository) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
-    }
-
-    @Bean
-    public ModelMapper modelMapper(){
-        return new ModelMapper();
     }
 
     public static void main(String[] args) {

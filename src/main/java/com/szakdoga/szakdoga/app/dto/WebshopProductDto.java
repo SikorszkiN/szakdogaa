@@ -6,7 +6,7 @@ import lombok.Getter;
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class WebshopDto {
+public class WebshopProductDto {
 
     @NotBlank
     private String name;

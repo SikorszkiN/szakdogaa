@@ -3,9 +3,10 @@ package com.szakdoga.szakdoga.app.service;
 import com.szakdoga.szakdoga.app.dto.ComponentDto;
 import com.szakdoga.szakdoga.app.mapper.ComponentMapper;
 import com.szakdoga.szakdoga.app.repository.ComponentRepository;
-import com.szakdoga.szakdoga.app.repository.WebshopRepository;
+import com.szakdoga.szakdoga.app.repository.WebshopProductRepository;
 import com.szakdoga.szakdoga.app.repository.entity.Component;
 import com.szakdoga.szakdoga.app.repository.entity.Webshop;
+import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -25,14 +26,15 @@ import java.util.Optional;
 public class ComponentServiceTest {
 
     private static Component component;
+
     @Mock
     private ComponentRepository componentRepository;
 
     @Mock
-    private WebshopService webshopService;
+    private WebshopProductService webshopProductService;
 
     @Mock
-    private WebshopRepository webshopRepository;
+    private WebshopProductRepository webshopProductRepository;
 
     @Mock
     private ComponentMapper componentMapper;
@@ -40,15 +42,15 @@ public class ComponentServiceTest {
     @InjectMocks
     private ComponentService componentService;
 
-    private static Webshop ws1 = null;
+    private static WebshopProduct ws1 = null;
 
-    private static Webshop ws2 = null;
+    private static WebshopProduct ws2 = null;
 
     @BeforeAll
     static void init() {
-        ws1 = new Webshop(1L, "webshop1","emag.hu", 5000, 5, true);
-        ws2 = new Webshop(2L, "webshop2","emag.hu", 4000, 5, true);
-        List<Webshop> webshops = new ArrayList<>();
+        ws1 = new WebshopProduct(1L, "webshop1","emag.hu", 5000, 5, true);
+        ws2 = new WebshopProduct(2L, "webshop2","emag.hu", 4000, 5, true);
+        List<WebshopProduct> webshops = new ArrayList<>();
         webshops.add(ws1);
         webshops.add(ws2);
         component = new Component(1L, "komponens1", webshops, null);
@@ -73,9 +75,9 @@ public class ComponentServiceTest {
         
         when(componentRepository.findById(1L)).thenReturn(Optional.of(component));
 
-        Webshop webshop = componentService.getCheapestWebshopData(1L);
+        WebshopProduct webshopProduct = componentService.getCheapestWebshopData(1L);
 
-        assertEquals(webshop, ws2);
+        assertEquals(webshopProduct, ws2);
         verify(componentRepository).findById(1L);
 
     }
