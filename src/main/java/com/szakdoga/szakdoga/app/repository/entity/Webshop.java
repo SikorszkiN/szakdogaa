@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -23,5 +24,8 @@ public class Webshop {
     @Column(nullable = false, unique = true)
     private String name;
     private String priceSelector;
+
+  /*  @OneToMany
+    private Set<WebshopProduct> webshopProducts;*/
 
 }

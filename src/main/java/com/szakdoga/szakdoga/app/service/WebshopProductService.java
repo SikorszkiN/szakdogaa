@@ -1,8 +1,10 @@
 package com.szakdoga.szakdoga.app.service;
 
 import com.szakdoga.szakdoga.app.dto.WebshopProductDto;
+import com.szakdoga.szakdoga.app.exception.NoEntityException;
 import com.szakdoga.szakdoga.app.mapper.WebshopProductMapper;
 import com.szakdoga.szakdoga.app.repository.WebshopProductRepository;
+import com.szakdoga.szakdoga.app.repository.WebshopRepository;
 import com.szakdoga.szakdoga.app.repository.entity.Webshop;
 import com.szakdoga.szakdoga.app.dto.Selectors;
 import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
@@ -18,6 +20,8 @@ public class WebshopProductService {
 
     private final WebshopProductRepository webshopProductRepository;
 
+    private final WebshopRepository webshopRepository;
+
     private final WebshopProductMapper webshopProductMapper;
 
     private final Selectors selectors;
@@ -26,7 +30,7 @@ public class WebshopProductService {
 
     public WebshopProduct saveWebshop(WebshopProductDto webshopProductDto){
         WebshopProduct webshopProduct = webshopProductMapper.webshopProductDtoToWebshopProduct(webshopProductDto);
-        if (webshopProduct.getName().equals("emag")) {
+        /*if (webshopProduct.getName().equals("emag")) {
             webshopProduct.setPrice(webScrapeService.getPrice(webshopProductDto.getLink(), selectors.getEmagSelector()));
         }
         if (webshopProduct.getName().equals("edigital")){
@@ -34,7 +38,8 @@ public class WebshopProductService {
         }
         if (webshopProduct.getName().equals("golddekor")){
             webshopProduct.setPrice(webScrapeService.getPrice(webshopProductDto.getLink(), selectors.getGoldDekorSelector()));
-        }
+        }*/
+        webshopProduct.setPrice(webScrapeService.getPrice(webshopProduct.getLink(),webshopProduct.getName()));
         return webshopProductRepository.save(webshopProduct);
     }
 
@@ -45,5 +50,12 @@ public class WebshopProductService {
     public List<WebshopProduct> findAllByName(String name){
         return webshopProductRepository.findAllByName(name);
     }
+
+    /*public void WebshopToWebshopProduct(Long webshopId, Long webshopPorudctId){
+        WebshopProduct webshopProduct = webshopProductRepository.findById(webshopPorudctId).orElseThrow(() -> new NoEntityException("Nem található a webshopProduct!"));
+        Webshop webshop = webshopRepository.findById(webshopId).orElseThrow(() -> new NoEntityException("Nem található a webshop!"));
+
+        webshop.getWebshopProducts().add(webshopProduct);
+    }*/
 
 }

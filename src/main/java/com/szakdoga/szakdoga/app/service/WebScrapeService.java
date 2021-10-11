@@ -16,8 +16,8 @@ public class WebScrapeService {
 
     private final WebshopRepository webshopRepository;
 
-    public int getPrice(String url, String selector) {
-     //  Webshop webshop = webshopRepository.findByName(webshopName).orElseThrow(() -> new NoEntityException("fdf"));
+    public int getPrice(String url, String webshopName) {
+        Webshop webshop = webshopRepository.findByName(webshopName).orElseThrow(() -> new NoEntityException("Webshop not found!, Please check webshop name!"));
 
         int price = 0;
         Document doc = null;
@@ -27,7 +27,7 @@ public class WebScrapeService {
             e.printStackTrace();
         }
         assert doc != null;
-        var elements = doc.select(selector);
+        var elements = doc.select(webshop.getPriceSelector());
         var element = elements.get(0);
         var priceString = element.text();
        /* price = Integer.parseInt(priceString.replaceAll("[a-zA-Z]*", "")
