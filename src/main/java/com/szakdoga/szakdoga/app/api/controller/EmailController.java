@@ -13,10 +13,10 @@ public class EmailController {
 
     private final EmailService emailService;
 
-    @GetMapping()
+   /* @GetMapping()
     public String email(){
         emailService.sendMessage("sikorszki18@gmail.com");
         return "Talán küldtem egy e-mailt";
-    }
+    }*/
 
 }

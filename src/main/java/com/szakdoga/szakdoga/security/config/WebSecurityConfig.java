@@ -1,6 +1,6 @@
-/*package com.szakdoga.szakdoga.security.config;
+package com.szakdoga.szakdoga.security.config;
 
-import com.szakdoga.szakdoga.app.service.UserService;
+import com.szakdoga.szakdoga.app.service.AppUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,16 +19,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final UserService userService;
+    private final AppUserService appUserService;
 
 
 @Override
 protected void configure(HttpSecurity http) throws Exception {
        http.
               csrf().disable().httpBasic().and()
-       .authorizeRequests()*/
-//       .antMatchers("/api/**", "/db/**")
-/*       .permitAll()
+       .authorizeRequests()
+       .antMatchers("/api/**", "/db/**")
+       .permitAll()
        .anyRequest().authenticated().and()
        .formLogin();
     }
@@ -42,7 +42,7 @@ protected void configure(HttpSecurity http) throws Exception {
     public DaoAuthenticationProvider deoDaoAuthenticationProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(bCryptPasswordEncoder);
-        provider.setUserDetailsService(userService);
+        provider.setUserDetailsService(appUserService);
         return provider;
     }
-}*/
+}

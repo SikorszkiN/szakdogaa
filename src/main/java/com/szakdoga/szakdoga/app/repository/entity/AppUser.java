@@ -28,7 +28,7 @@ public class AppUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole userRole = UserRole.ADMIN;
     private Boolean locked = false;
-    private Boolean enabled = true;
+    private Boolean enabled = false;
 
     @OneToMany(targetEntity = Product.class, cascade = CascadeType.ALL)
     private List<Product> productsToUser;

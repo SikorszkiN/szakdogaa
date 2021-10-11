@@ -1,27 +1,25 @@
 package com.szakdoga.szakdoga;
 
 import com.szakdoga.szakdoga.app.repository.ProductRepository;
-import com.szakdoga.szakdoga.app.repository.UserRepository;
-import org.modelmapper.ModelMapper;
+import com.szakdoga.szakdoga.app.repository.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableTransactionManagement
 public class SzakdogaApplication implements ApplicationRunner {
 
-    UserRepository userRepository;
+    AppUserRepository appUserRepository;
 
     ProductRepository productRepository;
 
     @Autowired
-    public SzakdogaApplication(UserRepository userRepository, ProductRepository productRepository) {
-        this.userRepository = userRepository;
+    public SzakdogaApplication(AppUserRepository appUserRepository, ProductRepository productRepository) {
+        this.appUserRepository = appUserRepository;
         this.productRepository = productRepository;
     }
 

@@ -19,14 +19,14 @@ public class EmailService {
 
     private final JavaMailSender javaMailSender;
 
-    public void sendMessage(String email){
+    public void sendMessage(String to, String email){
         SimpleMailMessage message;
         try {
             message = new SimpleMailMessage();
             message.setFrom(MESSAGE_FROM);
-            message.setTo(email);
-            message.setSubject("Próba email");
-            message.setText("valami");
+            message.setTo(to);
+            message.setSubject("Confirm your email");
+            message.setText(email);
             javaMailSender.send(message);
 
         } catch (Exception e){
