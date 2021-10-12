@@ -9,13 +9,13 @@ public class RegistrationController {
 
     private final RegistrationService registrationService;
 
-    @RequestMapping(path="api/registration")
+    @RequestMapping(path="/registration")
     @PostMapping
     public String register(@RequestBody RegistrationRequest request){
         return registrationService.register(request);
     }
 
-    @GetMapping(path = "api/registration/confirm")
+    @GetMapping(path = "/registration/confirm")
     public String confirm(@RequestParam("token") String token) {
         return registrationService.confirmToken(token);
     }

@@ -36,10 +36,10 @@ public class RegistrationService {
                         request.getLastName(),
                         request.getEmail(),
                         request.getPassword(),
-                        UserRole.ADMIN
+                        UserRole.USER
                 )
         );
-        String link = "http://localhost:8080/api/registration/confirm?token="+ token ;
+        String link = "http://localhost:8080/registration/confirm?token="+ token ;
         emailService.sendMessage(request.getEmail(), buildEmail(request.getFirstName(), link));
         return token;
     }

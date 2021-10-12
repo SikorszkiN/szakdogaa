@@ -39,12 +39,12 @@ public class ProductService {
     public ProductDto saveProduct(ProductDto productDto){
         //lecsekkolni hogy létezik-e
         Product product = productMapper.productDtoToProduct(productDto);
-        List<Product> products = findByNAme(product.getName());
+   /*     List<Product> products = findByNAme(product.getName());
         for(var p : products){
             if (p.getName().equals(product.getName())){
                 throw new DuplicateRecordException("Ez az elem már megtalálható az adatbázisban");
             }
-        }
+        }*/
         return productMapper.productToProductDto(productRepository.save(product));
     }
 
@@ -56,7 +56,6 @@ public class ProductService {
         product.getComponents().add(component);
     }
 
-    //Kiszámolja egy product árát
     public int getProductPrice(Long productId){
         Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
 

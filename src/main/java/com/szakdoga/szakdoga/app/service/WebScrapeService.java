@@ -9,6 +9,8 @@ import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +19,11 @@ public class WebScrapeService {
     private final WebshopRepository webshopRepository;
 
     public int getPrice(String url, String webshopName) {
-        Webshop webshop = webshopRepository.findByName(webshopName).orElseThrow(() -> new NoEntityException("Webshop not found!, Please check webshop name!"));
+        List<String> webshopNames = new ArrayList<>();
+        for(var webshop : webshopRepository.findAll()){
+            webshopNames.add(webshop.getName());
+        }
+        Webshop webshop = webshopRepository.findByName(webshopName).orElseThrow(() -> new NoEntityException("Webshop not found!, Please choose one of these webshops" + webshopNames));
 
         int price = 0;
         Document doc = null;
@@ -30,9 +36,6 @@ public class WebScrapeService {
         var elements = doc.select(webshop.getPriceSelector());
         var element = elements.get(0);
         var priceString = element.text();
-       /* price = Integer.parseInt(priceString.replaceAll("[a-zA-Z]*", "")
-                .replaceAll("[\\\\D.]", "").replaceAll(" ", "")
-                .trim());*/
         price = Integer.parseInt(priceString.replaceAll("[\\D.]",""));
         return price;
     }

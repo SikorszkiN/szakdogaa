@@ -27,7 +27,7 @@ protected void configure(HttpSecurity http) throws Exception {
        http.
               csrf().disable().httpBasic().and()
        .authorizeRequests()
-       .antMatchers("/api/**", "/db/**")
+       .antMatchers("/registration/**")
        .permitAll()
        .anyRequest().authenticated().and()
        .formLogin();
