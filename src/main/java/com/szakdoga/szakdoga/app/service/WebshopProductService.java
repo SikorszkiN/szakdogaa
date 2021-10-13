@@ -5,10 +5,10 @@ import com.szakdoga.szakdoga.app.exception.NoEntityException;
 import com.szakdoga.szakdoga.app.mapper.WebshopProductMapper;
 import com.szakdoga.szakdoga.app.repository.WebshopProductRepository;
 import com.szakdoga.szakdoga.app.repository.WebshopRepository;
-import com.szakdoga.szakdoga.app.repository.entity.Webshop;
 import com.szakdoga.szakdoga.app.dto.Selectors;
 import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,6 +49,22 @@ public class WebshopProductService {
 
     public List<WebshopProduct> findAllByName(String name){
         return webshopProductRepository.findAllByName(name);
+    }
+
+    @Scheduled(cron = "0 0 * * * *")
+    public void refreshWebshopProductPrice(){
+        List<WebshopProduct> webshopProducts = webshopProductRepository.findAll();
+        WebshopProduct webshopProduct;
+        int newPrice;
+        for (var product : webshopProducts){
+            newPrice = webScrapeService.getPrice(product.getLink(), product.getName());
+            webshopProduct = webshopProductRepository.findById(product.getId()).orElseThrow(() -> new NoEntityException("No Entity found"));
+            if(newPrice!= product.getPrice()){
+                webshopProduct.setPrice(newPrice);
+                webshopProductRepository.save(webshopProduct);
+            }
+        }
+       System.out.println("frissítem");
     }
 
     /*public void WebshopToWebshopProduct(Long webshopId, Long webshopPorudctId){

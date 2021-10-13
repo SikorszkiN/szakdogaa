@@ -7,11 +7,13 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+
+@EnableScheduling
 @SpringBootApplication
-@EnableTransactionManagement
-public class SzakdogaApplication implements ApplicationRunner {
+public class SzakdogaApplication {
 
     AppUserRepository appUserRepository;
 
@@ -27,9 +29,4 @@ public class SzakdogaApplication implements ApplicationRunner {
         SpringApplication.run(SzakdogaApplication.class, args);
     }
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        //userRepository.save(new User("Detti", "Daróczi", "sikorszki18@gmail.com"));
-        //productRepository.save(new Product("Doboz 20 cm",6000));
-    }
 }

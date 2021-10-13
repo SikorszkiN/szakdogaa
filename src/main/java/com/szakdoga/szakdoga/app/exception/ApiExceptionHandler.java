@@ -32,4 +32,15 @@ public class ApiExceptionHandler {
         );
         return new ResponseEntity<>(apiException,badRequest);
     }
+
+    @ExceptionHandler(value = DuplicateRecordException.class)
+    public ResponseEntity<Object> handleDuplicateRecordException(DuplicateRecordException e){
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        ApiException apiException = new ApiException(
+                e.getMessage(),
+                badRequest,
+                ZonedDateTime.now(ZoneId.systemDefault())
+        );
+        return new ResponseEntity<>(apiException,badRequest);
+    }
 }
