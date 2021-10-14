@@ -24,13 +24,13 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = NoEntityException.class)
     public ResponseEntity<Object> handleNoEntityException(NoEntityException e){
-        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        HttpStatus notFound = HttpStatus.NOT_FOUND;
         ApiException apiException = new ApiException(
                 e.getMessage(),
-                badRequest,
+                notFound,
                 ZonedDateTime.now(ZoneId.systemDefault())
         );
-        return new ResponseEntity<>(apiException,badRequest);
+        return new ResponseEntity<>(apiException,notFound);
     }
 
     @ExceptionHandler(value = DuplicateRecordException.class)

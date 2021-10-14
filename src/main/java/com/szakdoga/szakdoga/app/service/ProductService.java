@@ -37,27 +37,20 @@ public class ProductService {
     }
 
     public ProductDto saveProduct(ProductDto productDto){
-        //lecsekkolni hogy létezik-e
         Product product = productMapper.productDtoToProduct(productDto);
-   /*     List<Product> products = findByNAme(product.getName());
-        for(var p : products){
-            if (p.getName().equals(product.getName())){
-                throw new DuplicateRecordException("Ez az elem már megtalálható az adatbázisban");
-            }
-        }*/
         return productMapper.productToProductDto(productRepository.save(product));
     }
 
     @Transactional
     public void saveProductComponent(Long productId, Long componentId){
-        Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a komponens")); //Optional
+        Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a termék"));
         Component component = componentRepository.findById(componentId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
 
         product.getComponents().add(component);
     }
 
     public int getProductPrice(Long productId){
-        Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
+        Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a termék"));
 
         return product.getComponents()
                 .stream().map(component -> component.getWebshopProducts()
@@ -67,7 +60,7 @@ public class ProductService {
     }
 
     public void deleteProduct(Long productId){
-        Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
+        Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a termék"));
 
         productRepository.delete(product);
     }

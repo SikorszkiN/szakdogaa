@@ -7,10 +7,15 @@ import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import com.szakdoga.szakdoga.app.service.ComponentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/component")
@@ -43,6 +48,14 @@ public class ComponentController {
     @GetMapping("/cheap/name/{componentId}")
     public WebshopProduct cheapestWebshopName(@PathVariable Long componentId){
         return componentService.getCheapestWebshopData(componentId);
+    }
+
+    @DeleteMapping("/delete/{componentId}")
+    public ResponseEntity<Map<String, Boolean>> deleteComponent(@PathVariable @Valid Long componentId){
+        componentService.deleteComponent(componentId);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("deleted", Boolean.TRUE);
+        return ResponseEntity.ok(response);
     }
 
 }

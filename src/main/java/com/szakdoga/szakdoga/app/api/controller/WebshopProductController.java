@@ -12,6 +12,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @Validated
 @RestController
@@ -31,4 +33,12 @@ public class WebshopProductController {
          ResponseEntity.ok(saveWebshopToWebshopProduct(webshopProductId, webshopId));
          return "ok";
     }*/
+
+    @DeleteMapping("/delete/{webshopProductId}")
+    public ResponseEntity<Map<String, Boolean>> deleteWebshopProduct(@PathVariable @Valid Long webshopProductId){
+        webshopProductService.deleteWebshopProduct(webshopProductId);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("deleted", Boolean.TRUE);
+        return ResponseEntity.ok(response);
+    }
 }

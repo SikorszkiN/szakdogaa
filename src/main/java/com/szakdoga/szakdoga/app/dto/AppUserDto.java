@@ -14,6 +14,4 @@ public class AppUserDto {
     @NotBlank
     private String email;
 
-    private String password;
-
 }

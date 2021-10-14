@@ -74,4 +74,10 @@ public class WebshopProductService {
         webshop.getWebshopProducts().add(webshopProduct);
     }*/
 
+    public void deleteWebshopProduct(Long webshopProductId){
+        WebshopProduct webshopProduct = webshopProductRepository.findById(webshopProductId).orElseThrow(() -> new NoEntityException("Not found"));
+
+        webshopProductRepository.delete(webshopProduct);
+    }
+
 }

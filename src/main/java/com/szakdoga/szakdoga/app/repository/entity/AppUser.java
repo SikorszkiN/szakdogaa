@@ -27,7 +27,7 @@ public class AppUser implements UserDetails {
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
-    private UserRole userRole = UserRole.ADMIN;
+    private UserRole userRole = UserRole.USER;
     private Boolean locked = false;
     private Boolean enabled = false;
 

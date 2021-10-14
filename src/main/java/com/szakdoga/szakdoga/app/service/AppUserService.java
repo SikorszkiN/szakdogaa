@@ -43,6 +43,8 @@ public class AppUserService implements UserDetailsService {
 
     private final UserMapper userMapper;
 
+    private final EmailService emailService;
+
     public List<AppUser> findAll(){
         return appUserRepository.findAll();
     }
@@ -82,8 +84,8 @@ public class AppUserService implements UserDetailsService {
 
     }
 
-    public int enableAppUser(String email) {
-        return appUserRepository.enableUser(email);
+    public void enableAppUser(String email) {
+        appUserRepository.enableUser(email);
     }
 
     public AppUser saveUser(AppUserDto appUserDto){
@@ -128,6 +130,19 @@ public class AppUserService implements UserDetailsService {
                 }
         }
        return stringBuilder.toString();
+    }
+
+    public void deleteUser(Long appUserId){
+        AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()->new NoEntityException("Nem található a felhasználó!"));
+
+        appUserRepository.delete(appUser);
+
+    }
+
+    public void sendOrderCalculation(Long appUserId){
+        AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()->new NoEntityException("Nem található a felhasználó!"));
+
+        emailService.sendMessage(appUser.getEmail(), orderedProducts(appUserId));
     }
 
 }

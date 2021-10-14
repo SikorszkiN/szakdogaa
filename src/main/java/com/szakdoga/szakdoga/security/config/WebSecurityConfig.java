@@ -25,12 +25,14 @@ private final BCryptPasswordEncoder bCryptPasswordEncoder;
 @Override
 protected void configure(HttpSecurity http) throws Exception {
        http.
-              csrf().disable().httpBasic().and()
+               csrf().disable().httpBasic().and()
        .authorizeRequests()
-       .antMatchers("/registration/**")
-       .permitAll()
+       .antMatchers("/registration/**").hasAnyAuthority("USER", "ADMIN")
+               .antMatchers("/api/webshop/**").hasAuthority("ADMIN")
        .anyRequest().authenticated().and()
-       .formLogin();
+       .formLogin().permitAll()
+       .and()
+       .logout().permitAll();
     }
 
 @Override

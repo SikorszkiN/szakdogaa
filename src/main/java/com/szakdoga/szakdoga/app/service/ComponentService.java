@@ -79,5 +79,11 @@ public class ComponentService {
                 .orElseThrow(() -> new NoEntityException("majd ezt az exceptiont át kell írni"));
     }
 
+    public void deleteComponent(Long componentId){
+        Component component = componentRepository.findById(componentId).orElseThrow(()-> new ApiRequestException("Component not found!"));
+
+        componentRepository.delete(component);
+    }
+
 
 }
