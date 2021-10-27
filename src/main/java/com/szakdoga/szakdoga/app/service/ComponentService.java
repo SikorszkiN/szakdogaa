@@ -7,6 +7,7 @@ import com.szakdoga.szakdoga.app.mapper.ComponentMapper;
 import com.szakdoga.szakdoga.app.repository.WebshopProductRepository;
 import com.szakdoga.szakdoga.app.repository.entity.Component;
 import com.szakdoga.szakdoga.app.repository.ComponentRepository;
+import com.szakdoga.szakdoga.app.repository.entity.Product;
 import com.szakdoga.szakdoga.app.repository.entity.Webshop;
 import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -76,14 +78,23 @@ public class ComponentService {
                 .filter(WebshopProduct::isAvailability)
                 .filter(webshop -> webshop.getPrice() == (getCheapestWebshopPrice(component.getWebshopProducts())))
                 .min(Comparator.comparing(WebshopProduct::getDeliveryTime, Integer::compareTo))
-                .orElseThrow(() -> new NoEntityException("majd ezt az exceptiont át kell írni"));
+                .orElseThrow(() -> new NoEntityException("Webshop not found!"));
     }
 
     public void deleteComponent(Long componentId){
         Component component = componentRepository.findById(componentId).orElseThrow(()-> new ApiRequestException("Component not found!"));
 
+        List<Product> products = component.getProducts();
+        for (var product : products){
+            product.getComponents().remove(component);
+        }
+
         componentRepository.delete(component);
     }
 
-
+    public void updateComponent(Long componentId, String name){
+        Component component = componentRepository.findById(componentId).orElseThrow(()-> new ApiRequestException("Component not found!"));
+        component.setName(name);
+        componentRepository.save(component);
+    }
 }

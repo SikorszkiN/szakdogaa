@@ -1,17 +1,14 @@
 package com.szakdoga.szakdoga.app.dto;
 
 import lombok.Data;
-import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class WebshopProductDto {
+public class UpdateWebshopProduct {
 
-    @NotBlank
     private String name;
-    @NotNull
-    private String link;
 
+    private String link;
 }

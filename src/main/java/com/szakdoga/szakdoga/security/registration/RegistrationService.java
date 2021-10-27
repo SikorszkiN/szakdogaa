@@ -1,16 +1,19 @@
 package com.szakdoga.szakdoga.security.registration;
 
+import com.szakdoga.szakdoga.app.exception.ApiRequestException;
 import com.szakdoga.szakdoga.app.repository.entity.AppUser;
 import com.szakdoga.szakdoga.app.repository.entity.UserRole;
 import com.szakdoga.szakdoga.app.service.AppUserService;
 import com.szakdoga.szakdoga.app.service.EmailService;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationToken;
+import com.szakdoga.szakdoga.security.registration.token.ConfirmationTokenRepository;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -19,16 +22,16 @@ public class RegistrationService {
 
     private final AppUserService appUserService;
 
-    private final EmailValidator emailValidator;
 
     private final ConfirmationTokenService confirmationTokenService;
 
     private final EmailService emailService;
 
+    private final ConfirmationTokenRepository confirmationTokenRepository;
+
     public String register(RegistrationRequest request) {
-        boolean isValidEmail = emailValidator.test(request.getEmail());
-        if (!isValidEmail){
-            throw new IllegalStateException("Email not valid");
+        if (!isValidEmail(request.getEmail())){
+            throw new ApiRequestException("Email not valid");
         }
         String token = appUserService.signUpUser(
                 new AppUser(
@@ -36,7 +39,7 @@ public class RegistrationService {
                         request.getLastName(),
                         request.getEmail(),
                         request.getPassword(),
-                        UserRole.USER
+                        UserRole.ADMIN
                 )
         );
         String link = "http://localhost:8080/registration/confirm?token="+ token ;
@@ -44,6 +47,15 @@ public class RegistrationService {
         return token;
     }
 
+    public static boolean isValidEmail(String email){
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
+        Pattern pattern = Pattern.compile(emailRegex);
+        if (email==null){
+            return false;
+        }
+        return pattern.matcher(email).matches();
+    }
     @Transactional
     public String confirmToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenService
@@ -62,14 +74,14 @@ public class RegistrationService {
         }
 
         confirmationTokenService.setConfirmedAt(token);
-        appUserService.enableAppUser(
-                confirmationToken.getAppUser().getEmail());
+        appUserService.enableAppUser(confirmationToken.getAppUser().getEmail());
+        confirmationTokenRepository.delete(confirmationToken);
         return "confirmed";
     }
 
     private String buildEmail(String name, String link) {
         return "Kedves " + name
-                + "\n\n" + "Regisztrációd megerősítéséhez kérlek kattints a linkre: " + link + "\n\n" +
+                + "!\n\n" + "Regisztrációd megerősítéséhez kérlek kattints a linkre: " + link + "\n\n" +
                 "erre 15 perced van különben mindennek vége";
     }
 

@@ -13,6 +13,7 @@ public class WebshopMapper {
 
         webshopDto.setName(webshop.getName());
         webshopDto.setPriceSelector(webshop.getPriceSelector());
+        webshopDto.setDeliveryPrice(webshop.getDeliveryPrice());
 
         return webshopDto;
     }
@@ -22,6 +23,7 @@ public class WebshopMapper {
 
         webshop.setName(webshopDto.getName());
         webshop.setPriceSelector(webshopDto.getPriceSelector());
+        webshop.setDeliveryPrice(webshopDto.getDeliveryPrice());
 
         return webshop;
     }

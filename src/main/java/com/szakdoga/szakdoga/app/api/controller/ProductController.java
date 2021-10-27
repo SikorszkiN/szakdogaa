@@ -1,11 +1,14 @@
 package com.szakdoga.szakdoga.app.api.controller;
 
+import com.szakdoga.szakdoga.app.dto.ComponentPriceCalculate;
 import com.szakdoga.szakdoga.app.dto.ProductDto;
 import com.szakdoga.szakdoga.app.exception.ApiRequestException;
 import com.szakdoga.szakdoga.app.mapper.ProductMapper;
 import com.szakdoga.szakdoga.app.repository.entity.Product;
+import com.szakdoga.szakdoga.app.service.CalculateService;
 import com.szakdoga.szakdoga.app.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.postgresql.util.PSQLException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +26,7 @@ public class ProductController {
 
     private final ProductService productService;
     private final ProductMapper productMapper;
+    private final CalculateService calculateService;
 
     @GetMapping("/findall")
     public ResponseEntity<List<Product>> allProducts(){
@@ -45,7 +49,7 @@ public class ProductController {
 
     @PostMapping("/save")
     public ResponseEntity<ProductDto> saveProduct(@RequestBody @Valid ProductDto productDto){
-        return ResponseEntity.ok(productService.saveProduct(productDto));
+            return ResponseEntity.ok(productService.saveProduct(productDto));
     }
 
     @PostMapping("/{productId}/component/{componentId}")
@@ -58,6 +62,14 @@ public class ProductController {
         productService.deleteProduct(productId);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update/{productId}")
+    public ResponseEntity<Map<String, Boolean>> updateProduct(@PathVariable @Valid Long productId, @RequestBody String name){
+        productService.updateProduct(productId, name);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("updated", Boolean.TRUE);
         return ResponseEntity.ok(response);
     }
 

@@ -1,24 +1,44 @@
 package com.szakdoga.szakdoga.app.service;
 
+import com.szakdoga.szakdoga.app.dto.UpdateWebshopProduct;
 import com.szakdoga.szakdoga.app.dto.WebshopProductDto;
 import com.szakdoga.szakdoga.app.exception.NoEntityException;
 import com.szakdoga.szakdoga.app.mapper.WebshopProductMapper;
+import com.szakdoga.szakdoga.app.repository.ProductRepository;
 import com.szakdoga.szakdoga.app.repository.WebshopProductRepository;
 import com.szakdoga.szakdoga.app.repository.WebshopRepository;
 import com.szakdoga.szakdoga.app.dto.Selectors;
+import com.szakdoga.szakdoga.app.repository.entity.Component;
+import com.szakdoga.szakdoga.app.repository.entity.Product;
+import com.szakdoga.szakdoga.app.repository.entity.Webshop;
 import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jsoup.HttpStatusException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.support.CronExpression;
+import org.springframework.scheduling.support.CronSequenceGenerator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpServerErrorException;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WebshopProductService {
 
     private final WebshopProductRepository webshopProductRepository;
+
+    private final ProductRepository productRepository;
 
     private final WebshopRepository webshopRepository;
 
@@ -30,15 +50,7 @@ public class WebshopProductService {
 
     public WebshopProduct saveWebshop(WebshopProductDto webshopProductDto){
         WebshopProduct webshopProduct = webshopProductMapper.webshopProductDtoToWebshopProduct(webshopProductDto);
-        /*if (webshopProduct.getName().equals("emag")) {
-            webshopProduct.setPrice(webScrapeService.getPrice(webshopProductDto.getLink(), selectors.getEmagSelector()));
-        }
-        if (webshopProduct.getName().equals("edigital")){
-            webshopProduct.setPrice(webScrapeService.getPrice(webshopProductDto.getLink(), selectors.getEDigital()));
-        }
-        if (webshopProduct.getName().equals("golddekor")){
-            webshopProduct.setPrice(webScrapeService.getPrice(webshopProductDto.getLink(), selectors.getGoldDekorSelector()));
-        }*/
+
         webshopProduct.setPrice(webScrapeService.getPrice(webshopProduct.getLink(),webshopProduct.getName()));
         return webshopProductRepository.save(webshopProduct);
     }
@@ -51,33 +63,101 @@ public class WebshopProductService {
         return webshopProductRepository.findAllByName(name);
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Transactional
+    @Scheduled /*(cron = "0/15 * * * * *")*/(cron = "0 0 0 * * *") //Quartz
     public void refreshWebshopProductPrice(){
-        List<WebshopProduct> webshopProducts = webshopProductRepository.findAll();
-        WebshopProduct webshopProduct;
-        int newPrice;
-        for (var product : webshopProducts){
-            newPrice = webScrapeService.getPrice(product.getLink(), product.getName());
-            webshopProduct = webshopProductRepository.findById(product.getId()).orElseThrow(() -> new NoEntityException("No Entity found"));
-            if(newPrice!= product.getPrice()){
-                webshopProduct.setPrice(newPrice);
-                webshopProductRepository.save(webshopProduct);
-            }
-        }
-       System.out.println("frissítem");
+
+            PageRequest firstPageRequest = PageRequest.of(0, 100, Sort.by("name"));
+            var firstWebshopProductsPage = webshopProductRepository.findAll(firstPageRequest);
+            updateProductPrice(firstWebshopProductsPage);
+            int totalPages = firstWebshopProductsPage.getTotalPages();
+            IntStream.rangeClosed(1, totalPages).forEach(value -> {
+                PageRequest pageRequest = PageRequest.of(0, 100, Sort.by("name"));
+                var webshopProductsPage = webshopProductRepository.findAll(pageRequest);
+                updateProductPrice(webshopProductsPage);
+            });
     }
 
-    /*public void WebshopToWebshopProduct(Long webshopId, Long webshopPorudctId){
-        WebshopProduct webshopProduct = webshopProductRepository.findById(webshopPorudctId).orElseThrow(() -> new NoEntityException("Nem található a webshopProduct!"));
-        Webshop webshop = webshopRepository.findById(webshopId).orElseThrow(() -> new NoEntityException("Nem található a webshop!"));
+    void updateProductPrice(Page<WebshopProduct> webshopProductsPage) {
+        int newPrice;
+        WebshopProduct webshopProduct = null;
+        boolean isUpdated = false;
+        for (var product : webshopProductsPage) {
+            try {
+                newPrice = webScrapeService.getPrice(product.getLink(), product.getName());
 
-        webshop.getWebshopProducts().add(webshopProduct);
-    }*/
+                webshopProduct = webshopProductRepository.findById(product.getId()).orElseThrow(() -> new NoEntityException("No Entity found"));
+                if (newPrice != product.getPrice()) {
+                    webshopProduct.setPrice(newPrice);
+                    webshopProductRepository.save(webshopProduct);
+                    isUpdated = true;
+                }
+            } catch (Exception e) {
+                List<Component> components = new ArrayList<>(product.getComponents());
+                    for (var component : components){
+                        component.getWebshopProducts().remove(product);
+                    }
+
+                product.getComponents().clear();
+
+                webshopProductRepository.delete(product);
+            }
+            if (isUpdated) {
+                log.info("frissítettem");
+            }
+        }
+    }
 
     public void deleteWebshopProduct(Long webshopProductId){
         WebshopProduct webshopProduct = webshopProductRepository.findById(webshopProductId).orElseThrow(() -> new NoEntityException("Not found"));
 
+        List<Component> components = new ArrayList<>(webshopProduct.getComponents());
+        for (var component : components){
+            component.getWebshopProducts().remove(webshopProduct);
+        }
+        webshopProduct.getComponents().clear();
+
         webshopProductRepository.delete(webshopProduct);
     }
 
+    @Transactional
+    public void addWebshopProductToWebshop(Long webshopId, Long webshopProductId){
+        Webshop webshop = webshopRepository.findById(webshopId).orElseThrow();
+        WebshopProduct webshopProduct = webshopProductRepository.findById(webshopProductId).orElseThrow();
+
+        webshop.getWebshopProducts().add(webshopProduct);
+        webshopProduct.setWebshop(webshop);
+    }
+
+    public List<WebshopProduct> webshopProductsFromProduct(Long productId){
+        Product product = productRepository.findById(productId).orElseThrow(() -> new NoEntityException("Not found"));
+
+        List<Component> components = product.getComponents();
+
+
+      List<WebshopProduct> webshopProducts = new ArrayList<>();
+
+        for (var component : components){
+            for (WebshopProduct webshopProduct : component.getWebshopProducts()){
+                webshopProducts.add(webshopProductRepository.findById(webshopProduct.getId()).orElseThrow());
+            }
+
+        }
+
+        return webshopProducts;
+    }
+
+    public void updateWebshopProduct(Long webshopProductId, UpdateWebshopProduct updateWebshopProduct){
+        WebshopProduct webshopProduct = webshopProductRepository.findById(webshopProductId).orElseThrow(() -> new NoEntityException("Not found"));
+
+        if (updateWebshopProduct.getName() != null){
+            webshopProduct.setName(updateWebshopProduct.getName());
+        }
+
+        if (updateWebshopProduct.getLink() != null){
+            webshopProduct.setLink(updateWebshopProduct.getLink());
+        }
+
+        webshopProductRepository.save(webshopProduct);
+    }
 }

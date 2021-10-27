@@ -8,6 +8,7 @@ import com.szakdoga.szakdoga.app.repository.entity.AppUser;
 import com.szakdoga.szakdoga.app.repository.entity.Product;
 import com.szakdoga.szakdoga.app.repository.ProductRepository;
 import com.szakdoga.szakdoga.app.repository.AppUserRepository;
+import com.szakdoga.szakdoga.app.repository.entity.UserRole;
 import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationToken;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationTokenService;
@@ -51,13 +52,11 @@ public class AppUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return appUserRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
+        return appUserRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
     }
 
     public String signUpUser(AppUser appUser){
-       boolean userExist = appUserRepository.findByEmail(appUser.getEmail())
-                .isPresent();
+       boolean userExist = appUserRepository.findByEmail(appUser.getEmail()).isPresent();
 
        if (userExist) {
            throw new IllegalStateException("email already taken");
@@ -101,7 +100,7 @@ public class AppUserService implements UserDetailsService {
         appUser.getProductsToUser().add(product);
     }
 
-    public Map<String, Integer> orderedProduct(Long userId){
+/*    public Map<String, Integer> orderedProduct(Long userId){
         AppUser appUser = appUserRepository.findById(userId).orElseThrow(() -> new ApiRequestException("Nem található ez a felhasználó"));
 
         Map<String, Integer> nemtom = new HashMap<>();
@@ -112,10 +111,9 @@ public class AppUserService implements UserDetailsService {
         return nemtom;
     }
 
-    public String orderedProducts(Long userId){
+    private String orderedProductsEmail(Long userId){
         AppUser appUser = appUserRepository.findById(userId).orElseThrow(() -> new ApiRequestException("Nem található ez a felhasználó"));
 
-      //  Map<String, Integer> nemtom = new HashMap<>();
         StringBuilder stringBuilder = new StringBuilder();
         for(var p : appUser.getProductsToUser()){
             stringBuilder.append(p.getName()).append(" ")
@@ -130,19 +128,25 @@ public class AppUserService implements UserDetailsService {
                 }
         }
        return stringBuilder.toString();
-    }
+    }*/
 
     public void deleteUser(Long appUserId){
         AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()->new NoEntityException("Nem található a felhasználó!"));
-
         appUserRepository.delete(appUser);
 
     }
 
-    public void sendOrderCalculation(Long appUserId){
+/*    public void sendOrderCalculation(Long appUserId){
         AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()->new NoEntityException("Nem található a felhasználó!"));
 
-        emailService.sendMessage(appUser.getEmail(), orderedProducts(appUserId));
+        emailService.sendMessage(appUser.getEmail(), orderedProductsEmail(appUserId));
+    }*/
+
+    public void changeRole(Long appUserId, UserRole userRole){
+        AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()->new NoEntityException("Nem található a felhasználó!"));
+        appUser.setUserRole(userRole);
+
+        appUserRepository.save(appUser);
     }
 
 }

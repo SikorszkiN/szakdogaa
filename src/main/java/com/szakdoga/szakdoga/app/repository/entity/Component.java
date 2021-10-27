@@ -1,6 +1,7 @@
 package com.szakdoga.szakdoga.app.repository.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +24,7 @@ public class Component {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(name = "component_webshopProduct",
             joinColumns = {@JoinColumn(name = "component_id")},
             inverseJoinColumns = {@JoinColumn(name="webshop_Product_id")})

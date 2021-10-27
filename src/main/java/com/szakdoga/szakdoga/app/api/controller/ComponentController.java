@@ -33,10 +33,12 @@ public class ComponentController {
         return ResponseEntity.ok(componentService.findAll());
     }
 
-    @PostMapping("/{componentId}/webshop/{webshopId}")
-    public String saveWebshopToComponent(@PathVariable Long componentId, @PathVariable Long webshopId){
-        componentService.addWebshopProductToComponent(componentId, webshopId);
-        return "Talán sikerült  egy webshopot a komponenshez";
+    @PostMapping("/{componentId}/webshopproduct/{webshopproductId}")
+    public ResponseEntity<Map<String, Boolean>> saveWebshopToComponent(@PathVariable Long componentId, @PathVariable Long webshopproductId){
+        componentService.addWebshopProductToComponent(componentId, webshopproductId);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("Hozzáadás sikeres:", Boolean.TRUE);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{componentId}/addwebshops")
@@ -55,6 +57,14 @@ public class ComponentController {
         componentService.deleteComponent(componentId);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update/{componentId}")
+    public ResponseEntity<Map<String, Boolean>> updateProduct(@PathVariable @Valid Long componentId, @RequestBody String name){
+        componentService.updateComponent(componentId, name);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("updated", Boolean.TRUE);
         return ResponseEntity.ok(response);
     }
 

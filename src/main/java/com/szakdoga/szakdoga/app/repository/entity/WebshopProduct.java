@@ -1,15 +1,20 @@
 package com.szakdoga.szakdoga.app.repository.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.data.repository.cdi.Eager;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
-@AllArgsConstructor
 @Entity
+@RequiredArgsConstructor
 public class WebshopProduct {
 
     @Id
@@ -24,7 +29,20 @@ public class WebshopProduct {
     private int deliveryTime;
     private boolean availability;
 
-    public WebshopProduct() {
+    @ManyToOne
+    @JoinColumn(name = "webshop_id")
+    private Webshop webshop;
 
+    @JsonIgnore
+    @ManyToMany(mappedBy = "webshopProducts")
+    private List<Component> components = new ArrayList<>();
+
+    public WebshopProduct(Long id, String name, @Length(max = 1000) String link, int price, int deliveryTime, boolean availability, Webshop webshop) {
+        this.id = id;
+        this.name = name;
+        this.link = link;
+        this.price = price;
+        this.webshop = webshop;
     }
+
 }

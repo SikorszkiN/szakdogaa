@@ -17,18 +17,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @AllArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AppUserService appUserService;
-
 
 @Override
 protected void configure(HttpSecurity http) throws Exception {
        http.
                csrf().disable().httpBasic().and()
        .authorizeRequests()
-       .antMatchers("/registration/**").hasAnyAuthority("USER", "ADMIN")
+               .antMatchers("/registration/**").permitAll()
                .antMatchers("/api/webshop/**").hasAuthority("ADMIN")
+               .antMatchers("/api/appuser/changerole/**").hasAuthority("ADMIN")
        .anyRequest().authenticated().and()
        .formLogin().permitAll()
        .and()

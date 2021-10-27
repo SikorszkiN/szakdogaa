@@ -1,5 +1,6 @@
 package com.szakdoga.szakdoga.app.exception;
 
+import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,8 +34,8 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(apiException,notFound);
     }
 
-    @ExceptionHandler(value = DuplicateRecordException.class)
-    public ResponseEntity<Object> handleDuplicateRecordException(DuplicateRecordException e){
+    @ExceptionHandler(PSQLException.class)
+    public ResponseEntity<Object> handleDuplicateRecordException(PSQLException e){
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         ApiException apiException = new ApiException(
                 e.getMessage(),
@@ -43,4 +44,6 @@ public class ApiExceptionHandler {
         );
         return new ResponseEntity<>(apiException,badRequest);
     }
+
+
 }

@@ -12,10 +12,8 @@ public class WebshopProductMapper {
         WebshopProductDto webshopProductDto = new WebshopProductDto();
 
         webshopProductDto.setName(webshopProduct.getName());
-        webshopProductDto.setAvailability(webshopProduct.isAvailability());
         webshopProductDto.setLink(webshopProduct.getLink());
        /* webshop.setPrice(webshopDto.getPrice());*/
-        webshopProductDto.setDeliveryTime(webshopProduct.getDeliveryTime());
 
         return webshopProductDto;
     }
@@ -24,10 +22,8 @@ public class WebshopProductMapper {
        WebshopProduct webshopProduct = new WebshopProduct();
 
        webshopProduct.setName(webshopProductDto.getName());
-       webshopProduct.setAvailability(webshopProductDto.isAvailability());
        webshopProduct.setLink(webshopProductDto.getLink());
        /*webshop.setPrice(webshopDto.getPrice());*/
-       webshopProduct.setDeliveryTime(webshopProductDto.getDeliveryTime());
 
        return webshopProduct;
     }

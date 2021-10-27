@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -29,14 +30,13 @@ public class WebScrapeService {
         Document doc = null;
         try {
             doc = Jsoup.connect(url).get();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        assert doc != null;
-        var elements = doc.select(webshop.getPriceSelector());
-        var element = elements.get(0);
-        var priceString = element.text();
-        price = Integer.parseInt(priceString.replaceAll("[\\D.]",""));
+        var elements = Objects.requireNonNull(doc).select(webshop.getPriceSelector()); //exception
+        var element = elements.get(0);  //exception
+        var priceString = element.text();   //exception
+        price = Integer.parseInt(priceString.replaceAll("[\\D.]",""));   //exception
         return price;
     }
 

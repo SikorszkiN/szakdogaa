@@ -1,8 +1,9 @@
 package com.szakdoga.szakdoga.app.api.controller;
 
 import com.szakdoga.szakdoga.app.dto.AppUserDto;
-import com.szakdoga.szakdoga.app.mapper.UserMapper;
+import com.szakdoga.szakdoga.app.exception.ApiRequestException;
 import com.szakdoga.szakdoga.app.repository.entity.AppUser;
+import com.szakdoga.szakdoga.app.repository.entity.UserRole;
 import com.szakdoga.szakdoga.app.service.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ import java.util.Map;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/appuser")
 public class AppUserController {
 
     private final AppUserService appUserService;
@@ -28,18 +29,13 @@ public class AppUserController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<AppUser> saveUser(@RequestBody AppUserDto appUserDto){
+    public ResponseEntity<AppUser> saveUser(@RequestBody @Valid AppUserDto appUserDto){
         return ResponseEntity.ok(appUserService.saveUser(appUserDto));
     }
 
     @PostMapping("{userId}/products/{productId}")
-    public void saveUserProduct(@PathVariable Long userId, @PathVariable Long productId){
+    public void saveUserProduct(@PathVariable @Valid Long userId, @PathVariable @Valid Long productId){
         appUserService.saveUserProduct(userId, productId);
-    }
-
-    @GetMapping("/order/{userId}")
-    public String orders(@PathVariable Long userId){
-        return "" + appUserService.orderedProducts(userId);
     }
 
     @DeleteMapping("/delete/{appUserId}")
@@ -50,13 +46,29 @@ public class AppUserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/email/{appUserId}")
-    public ResponseEntity<Map<String, Boolean>>  sendCalculation(@PathVariable @Valid Long appUserId){
-        appUserService.sendOrderCalculation(appUserId);
+    /*    @GetMapping("/email/{appUserId}")
+        public ResponseEntity<Map<String, Boolean>> sendCalculation(@PathVariable @Valid Long appUserId){
+            appUserService.sendOrderCalculation(appUserId);
+            Map<String, Boolean> response = new HashMap<>();
+            response.put("Email sent", Boolean.TRUE);
+            return ResponseEntity.ok(response);
+        }*/
+
+    @PostMapping("/changerole/{appUserId}")
+    public ResponseEntity<Map<String, Boolean>> changeRole(@PathVariable @Valid Long appUserId, @RequestBody String role){
+        UserRole userRole;
+        if (role.equals("ADMIN")){
+            userRole = UserRole.ADMIN;
+        } else if (role.equals("USER")){
+            userRole = UserRole.USER;
+        } else {
+            throw new ApiRequestException("Hiba, kérlek válassz, a USER és az ADMIN role-ok közül");
+        }
+        appUserService.changeRole(appUserId, userRole);
         Map<String, Boolean> response = new HashMap<>();
-        response.put("Email sent", Boolean.TRUE);
+        response.put("Role changed", Boolean.TRUE);
         return ResponseEntity.ok(response);
-    }
+    }  
 
 
 }
