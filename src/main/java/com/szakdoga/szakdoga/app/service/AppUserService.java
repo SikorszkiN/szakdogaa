@@ -10,6 +10,7 @@ import com.szakdoga.szakdoga.app.repository.ProductRepository;
 import com.szakdoga.szakdoga.app.repository.AppUserRepository;
 import com.szakdoga.szakdoga.app.repository.entity.UserRole;
 import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
+import com.szakdoga.szakdoga.security.registration.RegistrationRequest;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationToken;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationTokenService;
 import lombok.RequiredArgsConstructor;
@@ -83,14 +84,16 @@ public class AppUserService implements UserDetailsService {
 
     }
 
+
+
     public void enableAppUser(String email) {
         appUserRepository.enableUser(email);
     }
 
-    public AppUser saveUser(AppUserDto appUserDto){
-        AppUser appUser = userMapper.userDtoToUser(appUserDto);
-        return appUserRepository.save(appUser);
-    }
+
+/*    public AppUser registerUser(RegistrationRequest registrationRequest){
+        return appUserRepository.save(registrationRequest);
+    }*/
 
     @Transactional
     public void saveUserProduct(Long userId, Long productId){

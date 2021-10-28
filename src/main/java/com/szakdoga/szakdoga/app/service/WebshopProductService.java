@@ -81,7 +81,9 @@ public class WebshopProductService {
     void updateProductPrice(Page<WebshopProduct> webshopProductsPage) {
         int newPrice;
         WebshopProduct webshopProduct = null;
+        String name = null;
         boolean isUpdated = false;
+        boolean isDeleted = false;
         for (var product : webshopProductsPage) {
             try {
                 newPrice = webScrapeService.getPrice(product.getLink(), product.getName());
@@ -99,11 +101,15 @@ public class WebshopProductService {
                     }
 
                 product.getComponents().clear();
-
+                isDeleted = true;
+                name = product.getName();
                 webshopProductRepository.delete(product);
             }
             if (isUpdated) {
                 log.info("frissítettem");
+            }
+            if (isDeleted){
+                log.info("Deleted webshop product: " + name);
             }
         }
     }

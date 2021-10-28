@@ -3,13 +3,17 @@ package com.szakdoga.szakdoga.app.api.controller;
 import com.szakdoga.szakdoga.app.dto.AppUserDto;
 import com.szakdoga.szakdoga.app.exception.ApiRequestException;
 import com.szakdoga.szakdoga.app.repository.entity.AppUser;
+import com.szakdoga.szakdoga.app.repository.entity.Blacklist;
 import com.szakdoga.szakdoga.app.repository.entity.UserRole;
 import com.szakdoga.szakdoga.app.service.AppUserService;
+import com.szakdoga.szakdoga.app.service.BlacklistService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -23,15 +27,17 @@ public class AppUserController {
 
     private final AppUserService appUserService;
 
+    private final BlacklistService blacklistService;
+
     @GetMapping("/all")
     public List<AppUser> getAllUsers(){
         return appUserService.findAll();
     }
 
-    @PostMapping("/save")
+/*    @PostMapping("/save")
     public ResponseEntity<AppUser> saveUser(@RequestBody @Valid AppUserDto appUserDto){
         return ResponseEntity.ok(appUserService.saveUser(appUserDto));
-    }
+    }*/
 
     @PostMapping("{userId}/products/{productId}")
     public void saveUserProduct(@PathVariable @Valid Long userId, @PathVariable @Valid Long productId){
@@ -68,7 +74,15 @@ public class AppUserController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("Role changed", Boolean.TRUE);
         return ResponseEntity.ok(response);
-    }  
+    }
+
+    @PostMapping("/logout")
+    public Blacklist logout(HttpServletRequest httpServletRequest) {
+
+        String token = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+
+        return blacklistService.addTokenToBlacklist(token);
+    }
 
 
 }

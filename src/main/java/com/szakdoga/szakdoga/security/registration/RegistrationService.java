@@ -1,6 +1,7 @@
 package com.szakdoga.szakdoga.security.registration;
 
 import com.szakdoga.szakdoga.app.exception.ApiRequestException;
+import com.szakdoga.szakdoga.app.repository.AppUserRepository;
 import com.szakdoga.szakdoga.app.repository.entity.AppUser;
 import com.szakdoga.szakdoga.app.repository.entity.UserRole;
 import com.szakdoga.szakdoga.app.service.AppUserService;
@@ -29,22 +30,24 @@ public class RegistrationService {
 
     private final ConfirmationTokenRepository confirmationTokenRepository;
 
-    public String register(RegistrationRequest request) {
+    private final AppUserRepository appUserRepository;
+
+    public AppUser register(RegistrationRequest request) {
         if (!isValidEmail(request.getEmail())){
             throw new ApiRequestException("Email not valid");
         }
-        String token = appUserService.signUpUser(
-                new AppUser(
-                        request.getFirstName(),
-                        request.getLastName(),
-                        request.getEmail(),
-                        request.getPassword(),
-                        UserRole.ADMIN
-                )
-        );
+
+        AppUser appUser = new AppUser(request.getFirstName(),
+                request.getLastName(),
+                request.getEmail(),
+                request.getPassword(),
+                UserRole.ADMIN);
+
+        String token = appUserService.signUpUser(appUser);
+
         String link = "http://localhost:8080/registration/confirm?token="+ token ;
         emailService.sendMessage(request.getEmail(), buildEmail(request.getFirstName(), link));
-        return token;
+        return appUser;
     }
 
     public static boolean isValidEmail(String email){
