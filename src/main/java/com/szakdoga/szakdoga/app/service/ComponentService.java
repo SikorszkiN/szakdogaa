@@ -54,24 +54,14 @@ public class ComponentService {
         component.getWebshopProducts().add(webshopProduct);
     }
 
-    @Transactional
-    public void WebshopsToComponent(Long componentId, String name){
-        Component component = componentRepository.findById(componentId).orElseThrow(()-> new ApiRequestException("Component not found!"));
-        List<WebshopProduct> webshopProductsByName = webshopProductService.findAllByName(name);
-
-        for(var webshop : webshopProductsByName){
-            component.getWebshopProducts().add(webshop);
-        }
-    }
-
-    private Integer getCheapestWebshopPrice(List<WebshopProduct> webshops){
-       return webshops.stream()
+/*    private Integer getCheapestWebshopPrice(List<WebshopProduct> webshopProducts){
+       return webshopProducts.stream()
                     .map(WebshopProduct::getPrice)
                     .min(Integer::compareTo)
                     .orElse(0);
-    }
+    }*/
 
-    public WebshopProduct getCheapestWebshopData(Long componentId){
+/*    public WebshopProduct getCheapestWebshopData(Long componentId){
         Component component = componentRepository.findById(componentId).orElseThrow(()-> new ApiRequestException("Component not found!"));
 
         return component.getWebshopProducts().stream()
@@ -79,6 +69,21 @@ public class ComponentService {
                 .filter(webshop -> webshop.getPrice() == (getCheapestWebshopPrice(component.getWebshopProducts())))
                 .min(Comparator.comparing(WebshopProduct::getDeliveryTime, Integer::compareTo))
                 .orElseThrow(() -> new NoEntityException("Webshop not found!"));
+    }*/
+
+    public WebshopProduct getCheapestWebshopData(Long componentId){
+        Component component = componentRepository.findById(componentId).orElseThrow(()-> new ApiRequestException("Component not found!"));
+        int minPrice = Integer.MAX_VALUE;
+        WebshopProduct cheapestWebshopProduct = new WebshopProduct();
+        int currentPrice = 0;
+        for (WebshopProduct webshopProduct : component.getWebshopProducts()) {
+            currentPrice = webshopProduct.getPrice() + webshopProduct.getWebshop().getDeliveryPrice();
+            if (currentPrice < minPrice) {
+                minPrice = currentPrice;
+                cheapestWebshopProduct = webshopProduct;
+            }
+        }
+        return cheapestWebshopProduct;
     }
 
     public void deleteComponent(Long componentId){

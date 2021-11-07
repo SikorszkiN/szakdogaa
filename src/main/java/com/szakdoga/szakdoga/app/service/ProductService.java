@@ -35,7 +35,7 @@ public class ProductService {
     }
 
     public Product findById(Long id){
-        return productRepository.findById(id).orElseThrow();
+        return productRepository.findById(id).orElseThrow(() -> new NoEntityException("Product not found!"));
     }
 
     public List<Product> findAll(){
@@ -60,10 +60,9 @@ public class ProductService {
         product.getComponents().add(component);
     }
 
-
+    List<WebshopProduct> cheapestWebshopProducts = new ArrayList<>();
     public Integer getProductPrice(Long productId){
         Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a termék"));
-
 
 /*    product.getComponents()
                 .stream().map(component -> component.getWebshopProducts()

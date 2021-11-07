@@ -12,8 +12,10 @@ import com.szakdoga.szakdoga.app.repository.entity.UserRole;
 import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import com.szakdoga.szakdoga.security.registration.RegistrationRequest;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationToken;
+import com.szakdoga.szakdoga.security.registration.token.ConfirmationTokenRepository;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationTokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,6 +39,8 @@ public class AppUserService implements UserDetailsService {
 
     private final ConfirmationTokenService confirmationTokenService;
 
+    private final ConfirmationTokenRepository confirmationTokenRepository;
+
     private final ProductService productService;
 
     private final ComponentService componentService;
@@ -49,6 +53,11 @@ public class AppUserService implements UserDetailsService {
 
     public List<AppUser> findAll(){
         return appUserRepository.findAll();
+    }
+
+    public AppUser findById(Long appUserId){
+
+        return appUserRepository.findById(appUserId).orElseThrow(() -> new NoEntityException("User not found!"));
     }
 
     @Override
@@ -97,10 +106,10 @@ public class AppUserService implements UserDetailsService {
 
     @Transactional
     public void saveUserProduct(Long userId, Long productId){
-        AppUser appUser = appUserRepository.findById(userId).orElseThrow(()-> new NoEntityException("Nem található a komponens")); // Optional
-        Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Nem található a komponens"));
+        AppUser appUser = appUserRepository.findById(userId).orElseThrow(()-> new NoEntityException("User not found!")); // Optional
+        Product product = productRepository.findById(productId).orElseThrow(()-> new NoEntityException("Product not found!"));
 
-        appUser.getProductsToUser().add(product);
+        appUser.getProducts().add(product);
     }
 
 /*    public Map<String, Integer> orderedProduct(Long userId){
@@ -112,38 +121,40 @@ public class AppUserService implements UserDetailsService {
             nemtom.put(p.getName(), productService.getProductPrice(p.getId()));
         }
         return nemtom;
-    }
+    }*/
 
     private String orderedProductsEmail(Long userId){
         AppUser appUser = appUserRepository.findById(userId).orElseThrow(() -> new ApiRequestException("Nem található ez a felhasználó"));
 
         StringBuilder stringBuilder = new StringBuilder();
-        for(var p : appUser.getProductsToUser()){
+        for(var p : appUser.getProducts()){
             stringBuilder.append(p.getName()).append(" ")
-                    .append(productService.getProductPrice(p.getId())).append(" Ft az összetevői: ");
-                for(var c : p.getComponents()){
-                    WebshopProduct webshopProduct = componentService.getCheapestWebshopData(c.getId());
-                            stringBuilder.append(c.getName()).append(" Webshop neve: ")
-                            .append(webshopProduct.getName()).append(" ")
-                            .append(" ")
-                            .append(webshopProduct.getPrice()).append(" Ft")
-                            .append(" A várható kiszállítási idő: ").append(webshopProduct.getDeliveryTime()).append(" nap ");
-                }
+                    .append(productService.getProductPrice(p.getId()));
         }
        return stringBuilder.toString();
-    }*/
+    }
 
     public void deleteUser(Long appUserId){
         AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()->new NoEntityException("Nem található a felhasználó!"));
+        String confirmationToken = appUser.getConfirmationToken().getToken();
+        confirmationTokenRepository.delete(confirmationTokenRepository.findByToken(confirmationToken).orElseThrow());
         appUserRepository.delete(appUser);
-
     }
 
-/*    public void sendOrderCalculation(Long appUserId){
-        AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()->new NoEntityException("Nem található a felhasználó!"));
+    @Scheduled(cron = "0 0 0 * * *")
+    public void deleteUserWithExpiredToke(){
+        List<ConfirmationToken> confirmationTokens = confirmationTokenRepository.findAll();
 
-        emailService.sendMessage(appUser.getEmail(), orderedProductsEmail(appUserId));
-    }*/
+        for(ConfirmationToken confirmationToken : confirmationTokens){
+            if(confirmationToken.getExpiresAt().equals(LocalDateTime.now())){
+                deleteUser(confirmationToken.getAppUser().getId());
+            }
+        }
+    }
+
+    public void sendOrderCalculation(Long appUserId, String email){
+        emailService.sendMessage(email, orderedProductsEmail(appUserId));
+    }
 
     public void changeRole(Long appUserId, UserRole userRole){
         AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()->new NoEntityException("Nem található a felhasználó!"));

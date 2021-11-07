@@ -8,6 +8,7 @@ import com.szakdoga.szakdoga.app.repository.entity.UserRole;
 import com.szakdoga.szakdoga.app.service.AppUserService;
 import com.szakdoga.szakdoga.app.service.BlacklistService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -34,6 +36,11 @@ public class AppUserController {
         return appUserService.findAll();
     }
 
+    @GetMapping("/findbyid/{appUserId}")
+    public ResponseEntity<AppUser> findById(@PathVariable @Valid Long appUserId){
+        return ResponseEntity.ok(appUserService.findById(appUserId));
+    }
+
 /*    @PostMapping("/save")
     public ResponseEntity<AppUser> saveUser(@RequestBody @Valid AppUserDto appUserDto){
         return ResponseEntity.ok(appUserService.saveUser(appUserDto));
@@ -41,24 +48,27 @@ public class AppUserController {
 
     @PostMapping("{userId}/products/{productId}")
     public void saveUserProduct(@PathVariable @Valid Long userId, @PathVariable @Valid Long productId){
+        log.info("Saving product to the user!");
         appUserService.saveUserProduct(userId, productId);
     }
 
     @DeleteMapping("/delete/{appUserId}")
     public ResponseEntity<Map<String, Boolean>> deleteUser(@PathVariable @Valid Long appUserId){
+        log.info("Delete user from the database!");
         appUserService.deleteUser(appUserId);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return ResponseEntity.ok(response);
     }
 
-    /*    @GetMapping("/email/{appUserId}")
-        public ResponseEntity<Map<String, Boolean>> sendCalculation(@PathVariable @Valid Long appUserId){
-            appUserService.sendOrderCalculation(appUserId);
+        @GetMapping("/email/{appUserId}")
+        public ResponseEntity<Map<String, Boolean>> sendCalculation(@PathVariable @Valid Long appUserId, @RequestBody String email){
+            log.info("Sending email!");
+            appUserService.sendOrderCalculation(appUserId, email);
             Map<String, Boolean> response = new HashMap<>();
             response.put("Email sent", Boolean.TRUE);
             return ResponseEntity.ok(response);
-        }*/
+        }
 
     @PostMapping("/changerole/{appUserId}")
     public ResponseEntity<Map<String, Boolean>> changeRole(@PathVariable @Valid Long appUserId, @RequestBody String role){
@@ -78,11 +88,13 @@ public class AppUserController {
 
     @PostMapping("/logout")
     public Blacklist logout(HttpServletRequest httpServletRequest) {
+        log.info("User logged out!");
 
         String token = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
         return blacklistService.addTokenToBlacklist(token);
     }
+
 
 
 }

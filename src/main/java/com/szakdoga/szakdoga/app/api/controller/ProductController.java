@@ -1,14 +1,10 @@
 package com.szakdoga.szakdoga.app.api.controller;
 
-import com.szakdoga.szakdoga.app.dto.ComponentPriceCalculate;
 import com.szakdoga.szakdoga.app.dto.ProductDto;
-import com.szakdoga.szakdoga.app.exception.ApiRequestException;
-import com.szakdoga.szakdoga.app.mapper.ProductMapper;
 import com.szakdoga.szakdoga.app.repository.entity.Product;
-import com.szakdoga.szakdoga.app.service.CalculateService;
 import com.szakdoga.szakdoga.app.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.postgresql.util.PSQLException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -25,8 +22,6 @@ import java.util.Map;
 public class ProductController {
 
     private final ProductService productService;
-    private final ProductMapper productMapper;
-    private final CalculateService calculateService;
 
     @GetMapping("/findall")
     public ResponseEntity<List<Product>> allProducts(){
@@ -35,11 +30,7 @@ public class ProductController {
 
     @GetMapping("/findbyid/{productId}")
     public ResponseEntity<Product> findProductById(@PathVariable Long productId){
-        try {
             return ResponseEntity.ok(productService.findById(productId));
-        }catch (Exception e){
-            throw new ApiRequestException("Product not found");
-        }
     }
 
     @GetMapping("/productprice/{productId}")
@@ -49,7 +40,8 @@ public class ProductController {
 
     @PostMapping("/save")
     public ResponseEntity<ProductDto> saveProduct(@RequestBody @Valid ProductDto productDto){
-            return ResponseEntity.ok(productService.saveProduct(productDto));
+        log.info("Saving new Product to the database!");
+        return ResponseEntity.ok(productService.saveProduct(productDto));
     }
 
     @PostMapping("/{productId}/component/{componentId}")
@@ -59,6 +51,7 @@ public class ProductController {
 
     @DeleteMapping("/delete/{productId}")
     public ResponseEntity<Map<String, Boolean>> deleteProduct(@PathVariable @Valid Long productId){
+        log.info("Delete Product from the database!");
         productService.deleteProduct(productId);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
@@ -67,6 +60,7 @@ public class ProductController {
 
     @PutMapping("/update/{productId}")
     public ResponseEntity<Map<String, Boolean>> updateProduct(@PathVariable @Valid Long productId, @RequestBody String name){
+        log.info("Modify product!");
         productService.updateProduct(productId, name);
         Map<String, Boolean> response = new HashMap<>();
         response.put("updated", Boolean.TRUE);

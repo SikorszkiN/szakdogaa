@@ -44,8 +44,6 @@ public class WebshopProductService {
 
     private final WebshopProductMapper webshopProductMapper;
 
-    private final Selectors selectors;
-
     private final WebScrapeService webScrapeService;
 
     public WebshopProduct saveWebshop(WebshopProductDto webshopProductDto){

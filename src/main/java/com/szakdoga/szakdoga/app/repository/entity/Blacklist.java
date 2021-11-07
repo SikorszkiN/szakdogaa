@@ -20,4 +20,8 @@ public class Blacklist {
     public Blacklist(String token) {
         this.token = token;
     }
+
+    public Blacklist() {
+
+    }
 }

@@ -8,9 +8,11 @@ import com.szakdoga.szakdoga.security.registration.RegistrationService;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationTokenRepository;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationTokenService;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,15 +37,16 @@ public class RegistrationServiceTest {
     @InjectMocks
     private RegistrationService registrationService;
 
-    @BeforeAll
-    static void init(){
-        AppUser appUser = new AppUser("Firstname", "lasname", "email@gmail.com", "password", UserRole.ADMIN);
+    @BeforeEach
+    void init(){
+        AppUser appUser = new AppUser(1L, "Firstname", "lasname", "email@gmail.com", "password", UserRole.ADMIN);
+        Mockito.when(appUserService.findById(any())).thenReturn(appUser);
     }
 
     @Test
     public void registrationEmailTeszt(){
-        String email = "fasdfasd";
-        boolean isValid = registrationService.isValidEmail(email);
+        String email = "teszt@email.hu";
+        boolean isValid = RegistrationService.isValidEmail(email);
         assertTrue(isValid);
     }
 

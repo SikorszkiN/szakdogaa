@@ -1,8 +1,7 @@
 package com.szakdoga.szakdoga.app.repository.entity;
 
-import lombok.AllArgsConstructor;
+import com.szakdoga.szakdoga.security.registration.token.ConfirmationToken;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,11 +27,13 @@ public class AppUser implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private UserRole userRole = UserRole.USER;
-    private Boolean locked = false;
     private Boolean enabled = false;
 
+    @OneToOne(mappedBy = "appUser")
+    ConfirmationToken confirmationToken;
+
     @OneToMany(targetEntity = Product.class, cascade = CascadeType.ALL)
-    private List<Product> productsToUser;
+    private List<Product> products;
 
     public AppUser(String firstName, String lastName, String email, String password, UserRole userRole) {
         this.firstName = firstName;
@@ -41,6 +42,16 @@ public class AppUser implements UserDetails {
         this.password = password;
         this.userRole = userRole;
     }
+
+    public AppUser(Long id, String firstName, String lastName, String email, String password, UserRole userRole) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.userRole = userRole;
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -65,7 +76,7 @@ public class AppUser implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return !locked;
+        return true;
     }
 
     @Override

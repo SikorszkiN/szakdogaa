@@ -25,20 +25,10 @@ public class WebshopProductController {
 
     private final WebshopProductService webshopProductService;
 
-    private final ComponentService componentService;
-
-    private final ProductService productService;
-
     @PostMapping("/save")
     public ResponseEntity<WebshopProduct> saveWebshop(@RequestBody WebshopProductDto webshopProductDto){
         return ResponseEntity.ok(webshopProductService.saveWebshop(webshopProductDto));
     }
-
-   /* @PostMapping("/{webshopProductId}/webshop/{webshopId}")
-    public String saveWebshopToWebshopProduct(@PathVariable @Valid Long webshopProductId, @PathVariable @Valid Long webshopId){
-         ResponseEntity.ok(saveWebshopToWebshopProduct(webshopProductId, webshopId));
-         return "ok";
-    }*/
 
     @DeleteMapping("/delete/{webshopProductId}")
     public ResponseEntity<Map<String, Boolean>> deleteWebshopProduct(@PathVariable @Valid Long webshopProductId){
@@ -49,18 +39,11 @@ public class WebshopProductController {
     }
 
     @PostMapping("/{webshopProductId}/webshop/{webshopId}")
-    public String addWebshopProductToWebshop(@PathVariable Long webshopId,@PathVariable Long webshopProductId){
+    public ResponseEntity<Map<String, Boolean>>addWebshopProductToWebshop(@PathVariable Long webshopId,@PathVariable Long webshopProductId){
         webshopProductService.addWebshopProductToWebshop(webshopId,webshopProductId);
-        /*Map<String, Boolean> response = new HashMap<>();
+        Map<String, Boolean> response = new HashMap<>();
         response.put("WebshopProduct added", Boolean.TRUE);
-        return ResponseEntity.ok(response);*/
-
-        return "ok";
-    }
-
-    @GetMapping("/teszt/{productId}")
-    public List<WebshopProduct> teszt (@PathVariable Long productId){
-      return webshopProductService.webshopProductsFromProduct(productId);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/update/{webshopProductId}")

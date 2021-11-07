@@ -50,8 +50,8 @@ public class ComponentServiceTest {
     static void init() {
         Webshop emag = new Webshop(1L, "emag", "selector", 1000);
         Webshop edigital = new Webshop(2L, "edigital", "selector", 1100);
-        ws1 = new WebshopProduct(1L, "webshop1","emag.hu", 5000, 5, true, emag);
-        ws2 = new WebshopProduct(2L, "webshop2","emag.hu", 4000, 5, true, edigital);
+        ws1 = new WebshopProduct(1L, "webshop1","emag.hu", 5000,  emag);
+        ws2 = new WebshopProduct(2L, "webshop2","emag.hu", 4000, edigital);
         List<WebshopProduct> webshops = new ArrayList<>();
         webshops.add(ws1);
         webshops.add(ws2);

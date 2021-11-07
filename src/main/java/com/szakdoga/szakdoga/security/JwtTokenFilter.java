@@ -43,7 +43,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         Blacklist blacklist = this.blacklistRepository.findByToken(header);
-        System.out.println(blacklist);
         if (blacklist != null){
             throw new ServletException("Invalid token.");
         }

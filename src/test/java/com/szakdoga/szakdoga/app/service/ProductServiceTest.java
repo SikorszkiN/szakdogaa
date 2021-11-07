@@ -9,9 +9,14 @@ import com.szakdoga.szakdoga.app.repository.entity.Webshop;
 import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
 
     private static Product product;
@@ -37,8 +42,9 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    @BeforeAll
-    static void init(){
+    @BeforeEach
+    void setup(){
+        productService = new ProductService(productRepository, componentRepository, productMapper, cartesianProduct);
         List<Component> components = new ArrayList<>();
         List<WebshopProduct> webshops1 = new ArrayList<>();
         List<WebshopProduct> webshops2 = new ArrayList<>();
@@ -47,9 +53,9 @@ public class ProductServiceTest {
         WebshopProduct ws3;
         Webshop emag = new Webshop(1L, "emag", "selector", 1000);
         Webshop edigital = new Webshop(2L, "edigital", "selector", 1100);
-        ws1 = new WebshopProduct(1L, "emag","emag.hu", 5000, 5, true, emag);
-        ws2 = new WebshopProduct(2L, "edigital","edigital.hu", 4000, 5, true, edigital);
-        ws3 = new WebshopProduct(3L, "edigital","edigital.hu", 6000, 5, true, edigital);
+        ws1 = new WebshopProduct(1L, "emag","emag.hu", 5000, emag);
+        ws2 = new WebshopProduct(2L, "edigital","edigital.hu", 4000,  edigital);
+        ws3 = new WebshopProduct(3L, "edigital","edigital.hu", 6000,  edigital);
         webshops1.add(ws1);
         webshops1.add(ws2);
         webshops2.add(ws3);
@@ -63,11 +69,53 @@ public class ProductServiceTest {
 
     @Test
     public void getProductPriceTest(){
-        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        List<Component> components = new ArrayList<>();
+        List<WebshopProduct> webshops1 = new ArrayList<>();
+        List<WebshopProduct> webshops2 = new ArrayList<>();
+        WebshopProduct ws1;
+        WebshopProduct ws2;
+        WebshopProduct ws3;
+        Webshop emag = new Webshop(1L, "emag", "selector", 1000);
+        Webshop edigital = new Webshop(2L, "edigital", "selector", 1100);
+        ws1 = new WebshopProduct(1L, "emag","emag.hu", 5000, emag);
+        ws2 = new WebshopProduct(2L, "edigital","edigital.hu", 4000,  edigital);
+        ws3 = new WebshopProduct(3L, "edigital","edigital.hu", 6000,  edigital);
+        webshops1.add(ws1);
+        webshops1.add(ws2);
+        webshops2.add(ws3);
+        product = new Product(1L, "Termek1", components);
+        Component c1 = new Component(1L,"komponens1", webshops1, List.of(product));
+        Component c2 = new Component(2L, "komponens2", webshops2, List.of(product));
+        components.add(c1);
+        components.add(c2);
 
-        Integer price = productService.getProductPrice(1L);
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        Mockito.when(cartesianProduct.product(any())).thenReturn(List.of(List.of(ws1, ws3), List.of(ws2, ws3)));
+
+        Integer price = productService.getProductPrice(product.getId());
 
         assertEquals(11100, price);
+
+    }
+
+    @Test
+    public void deleteProduct() {
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        productService.deleteProduct(1L);
+        verify(productRepository).delete(product);
+    }
+
+    @Test
+    public void modifyProduct(){
+        // Given
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+
+        // When
+        productService.updateProduct(1L, "valami");
+
+        // Then
+        assertEquals(product.getName(), "valami");
+        verify(productRepository).save(product);
     }
 
 /*    public<V> List<List<V>> product(List<List<V>> lists) {

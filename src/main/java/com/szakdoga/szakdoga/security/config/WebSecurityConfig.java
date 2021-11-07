@@ -57,7 +57,11 @@ protected void configure(HttpSecurity http) throws Exception {
                     })
             )
             .and();
-            http.authorizeRequests().antMatchers("/registration/**").permitAll().antMatchers("/api/public/login").permitAll().anyRequest().authenticated();
+            http.authorizeRequests().antMatchers("/registration/**", "/api/public/**").permitAll()
+                    .antMatchers("/registration/**").permitAll()
+                    .antMatchers("/api/webshop/**").hasAuthority("ADMIN")
+                    .antMatchers("/api/appuser/changerole/**").hasAuthority("ADMIN")
+                    .antMatchers("/api/**").hasAnyAuthority("USER", "ADMIN");
 
            http.addFilterBefore(
                    jwtTokenFilter,
@@ -84,13 +88,13 @@ protected void configure(HttpSecurity http) throws Exception {
       //  auth.authenticationProvider(deoDaoAuthenticationProvider());
     }
 
-    @Bean
+/*    @Bean
     public DaoAuthenticationProvider deoDaoAuthenticationProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(bCryptPasswordEncoder);
         provider.setUserDetailsService(appUserService);
         return provider;
-    }
+    }*/
 
     @Bean
     public CorsFilter corsFilter() {

@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class WebshopService {
@@ -22,7 +24,9 @@ public class WebshopService {
 
     private final WebshopMapper webshopMapper;
 
-    private final WebshopProductRepository webshopProductRepository;
+    public List<Webshop> findAll(){
+        return webshopRepository.findAll();
+    }
 
     public WebshopDto save(WebshopDto webshopDto){
 

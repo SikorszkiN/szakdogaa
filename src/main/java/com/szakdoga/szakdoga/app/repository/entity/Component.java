@@ -30,6 +30,7 @@ public class Component {
             inverseJoinColumns = {@JoinColumn(name="webshop_Product_id")})
     private List<WebshopProduct> webshopProducts = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "components")
     private List<Product> products = new ArrayList<>();
 

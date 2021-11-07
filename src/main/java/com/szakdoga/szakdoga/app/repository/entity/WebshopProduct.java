@@ -26,8 +26,6 @@ public class WebshopProduct {
     @Column(nullable = false)
     private String link;
     private int price;
-    private int deliveryTime;
-    private boolean availability;
 
     @ManyToOne
     @JoinColumn(name = "webshop_id")
@@ -37,7 +35,7 @@ public class WebshopProduct {
     @ManyToMany(mappedBy = "webshopProducts")
     private List<Component> components = new ArrayList<>();
 
-    public WebshopProduct(Long id, String name, @Length(max = 1000) String link, int price, int deliveryTime, boolean availability, Webshop webshop) {
+    public WebshopProduct(Long id, String name, @Length(max = 1000) String link, int price, Webshop webshop) {
         this.id = id;
         this.name = name;
         this.link = link;

@@ -24,7 +24,6 @@ public class Product {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @JsonIgnore
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "component_product",
             joinColumns = {@JoinColumn(name = "product_id")},

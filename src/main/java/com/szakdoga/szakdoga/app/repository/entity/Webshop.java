@@ -31,7 +31,7 @@ public class Webshop {
     private Integer deliveryPrice;
 
     @JsonIgnore
-    @OneToMany(orphanRemoval = true, mappedBy = "webshop")
+    @OneToMany(mappedBy = "webshop")
     private List<WebshopProduct> webshopProducts = new ArrayList<>();
 
     public Webshop(Long id, String name, String priceSelector, Integer deliveryPrice) {
