@@ -93,16 +93,10 @@ public class AppUserService implements UserDetailsService {
 
     }
 
-
-
     public void enableAppUser(String email) {
         appUserRepository.enableUser(email);
     }
 
-
-/*    public AppUser registerUser(RegistrationRequest registrationRequest){
-        return appUserRepository.save(registrationRequest);
-    }*/
 
     @Transactional
     public void saveUserProduct(Long userId, Long productId){
@@ -112,16 +106,6 @@ public class AppUserService implements UserDetailsService {
         appUser.getProducts().add(product);
     }
 
-/*    public Map<String, Integer> orderedProduct(Long userId){
-        AppUser appUser = appUserRepository.findById(userId).orElseThrow(() -> new ApiRequestException("Nem található ez a felhasználó"));
-
-        Map<String, Integer> nemtom = new HashMap<>();
-
-        for(var p : appUser.getProductsToUser()){
-            nemtom.put(p.getName(), productService.getProductPrice(p.getId()));
-        }
-        return nemtom;
-    }*/
 
     private String orderedProductsEmail(Long userId){
         AppUser appUser = appUserRepository.findById(userId).orElseThrow(() -> new ApiRequestException("Nem található ez a felhasználó"));

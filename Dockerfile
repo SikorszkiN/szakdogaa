@@ -1,4 +1,7 @@
-FROM adoptopenjdk:11-jre-hotspot
-ARG JAR_FILE=*.jar
-COPY ${JAR_FILE} application.jar
-ENTRYPOINT ["java", "-jar", "application.jar"]
+FROM maven:3.8.3-jdk-11
+
+WORKDIR /
+COPY . .
+RUN mvn clean install -DskipTests
+
+CMD mvn spring-boot:run
