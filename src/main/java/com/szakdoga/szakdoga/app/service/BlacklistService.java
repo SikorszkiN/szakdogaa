@@ -25,10 +25,6 @@ public class BlacklistService {
        return blacklistRepository.save(blacklist);
    }
 
-   private void deleteExpiredJWTToken(Blacklist blacklist){
-       blacklistRepository.delete(blacklist);
-   }
-
    @Scheduled(cron = "0 0 0 * * *")
    public void deleteBlackListToken(){
        List<Blacklist> blacklistTokens = blacklistRepository.findAll();

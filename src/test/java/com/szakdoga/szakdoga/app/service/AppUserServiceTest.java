@@ -4,6 +4,7 @@ import com.szakdoga.szakdoga.app.mapper.UserMapper;
 import com.szakdoga.szakdoga.app.repository.AppUserRepository;
 import com.szakdoga.szakdoga.app.repository.ProductRepository;
 import com.szakdoga.szakdoga.app.repository.entity.*;
+import com.szakdoga.szakdoga.security.registration.token.ConfirmationToken;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationTokenRepository;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationTokenService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +15,15 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class AppUserServiceTest {
@@ -73,7 +81,9 @@ public class AppUserServiceTest {
         Component c2 = new Component(2L, "komponens2", webshops2, List.of(product));
         components.add(c1);
         components.add(c2);
-        appUser = new AppUser(1L, "Keresztnev", "Vezeteknev", "teszt@email.hu", "password", UserRole.ADMIN);
+        ConfirmationToken confirmationToken = new ConfirmationToken(1L, "asdasd" ,LocalDateTime.MIN, LocalDateTime.MAX, LocalDateTime.now(), appUser);
+        appUser = new AppUser(1L, "Keresztnev", "Vezeteknev", "teszt@email.hu", "password", UserRole.ADMIN,true, confirmationToken);
+        when(confirmationTokenRepository.findByToken(any())).thenReturn(Optional.of(confirmationToken));
     }
 
     @Test
@@ -85,5 +95,42 @@ public class AppUserServiceTest {
         // then
         Mockito.verify(appUserRepository).findById(1L);
     }
+
+    @Test
+    public void findAllTest(){
+        // given
+        Mockito.when(appUserRepository.findAll()).thenReturn(List.of(appUser));
+        // when
+        appUserService.findAll();
+        //then
+        Mockito.verify(appUserRepository).findAll();
+    }
+
+    @Test
+    public void deleteUser() {
+        // given
+        Mockito.when(appUserRepository.findById(1L)).thenReturn(Optional.of(appUser));
+
+        // when
+        appUserService.deleteUser(1L);
+
+        // then
+        verify(appUserRepository).delete(appUser);
+    }
+
+/*
+    @Test
+    public void modifyUser(){
+        // Given
+        when(appUserRepository.findById(1L)).thenReturn(Optional.of(appUser));
+
+        // When
+        appUserService.(1L, "valami");
+
+        // Then
+        assertEquals(product.getName(), "valami");
+        verify(productRepository).save(product);
+    }
+*/
 
 }

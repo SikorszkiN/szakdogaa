@@ -68,6 +68,8 @@ public class ProductServiceTest {
 
     @Test
     public void getProductPriceTest(){
+
+        // given
         List<Component> components = new ArrayList<>();
         List<WebshopProduct> webshops1 = new ArrayList<>();
         List<WebshopProduct> webshops2 = new ArrayList<>();
@@ -91,8 +93,11 @@ public class ProductServiceTest {
         when(productRepository.findById(any())).thenReturn(Optional.of(product));
         Mockito.when(cartesianProduct.product(any())).thenReturn(List.of(List.of(ws1, ws3), List.of(ws2, ws3)));
 
+        // when
         Integer price = productService.getProductPrice(product.getId());
 
+
+        // then
         assertEquals(11100, price);
 
     }

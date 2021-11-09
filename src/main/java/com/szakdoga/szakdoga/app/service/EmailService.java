@@ -2,12 +2,13 @@ package com.szakdoga.szakdoga.app.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.juli.logging.Log;
-import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import javax.mail.internet.MimeMessage;
 
 @Slf4j
 @Service
@@ -20,13 +21,13 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
 
     public void sendMessage(String to, String email){
-        SimpleMailMessage message;
         try {
-            message = new SimpleMailMessage();
-            message.setFrom(MESSAGE_FROM);
-            message.setTo(to);
-            message.setSubject("Confirm your email");
-            message.setText(email);
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
+            helper.setText(email,true);
+            helper.setFrom(MESSAGE_FROM);
+            helper.setTo(to);
+            helper.setSubject("Confirm your email");
             javaMailSender.send(message);
 
         } catch (Exception e){

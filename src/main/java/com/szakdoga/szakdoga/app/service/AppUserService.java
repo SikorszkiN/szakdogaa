@@ -120,8 +120,9 @@ public class AppUserService implements UserDetailsService {
 
     public void deleteUser(Long appUserId){
         AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()->new NoEntityException("Nem található a felhasználó!"));
-        String confirmationToken = appUser.getConfirmationToken().getToken();
-        confirmationTokenRepository.delete(confirmationTokenRepository.findByToken(confirmationToken).orElseThrow());
+        if(appUser.getConfirmationToken().getToken()!=null) {
+            confirmationTokenRepository.delete(confirmationTokenRepository.findByToken(appUser.getConfirmationToken().getToken()).orElseThrow());
+        }
         appUserRepository.delete(appUser);
     }
 
