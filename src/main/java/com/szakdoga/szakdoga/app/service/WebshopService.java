@@ -28,6 +28,10 @@ public class WebshopService {
         return webshopRepository.findAll();
     }
 
+    public Webshop findById(Long webshopId){
+       return webshopRepository.findById(webshopId).orElseThrow(() -> new NoEntityException("Webshop Not found"));
+    }
+
     public WebshopDto save(WebshopDto webshopDto){
 
         return  webshopMapper.WebshopToWebshopDto(webshopRepository.save(webshopMapper.WebshopDtoToWebshop(webshopDto)));

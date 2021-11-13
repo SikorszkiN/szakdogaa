@@ -133,7 +133,7 @@ public class WebshopProductService {
         webshopProduct.setWebshop(webshop);
     }
 
-    public List<WebshopProduct> webshopProductsFromProduct(Long productId){
+/*    public List<WebshopProduct> webshopProductsFromProduct(Long productId){
         Product product = productRepository.findById(productId).orElseThrow(() -> new NoEntityException("Not found"));
 
         List<Component> components = product.getComponents();
@@ -149,7 +149,7 @@ public class WebshopProductService {
         }
 
         return webshopProducts;
-    }
+    }*/
 
     public void updateWebshopProduct(Long webshopProductId, UpdateWebshopProduct updateWebshopProduct){
         WebshopProduct webshopProduct = webshopProductRepository.findById(webshopProductId).orElseThrow(() -> new NoEntityException("Not found"));

@@ -1,5 +1,6 @@
 package com.szakdoga.szakdoga.app.service;
 
+import com.szakdoga.szakdoga.app.dto.UpdateUserData;
 import com.szakdoga.szakdoga.app.mapper.UserMapper;
 import com.szakdoga.szakdoga.app.repository.AppUserRepository;
 import com.szakdoga.szakdoga.app.repository.ProductRepository;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,6 +30,8 @@ import static org.mockito.Mockito.when;
 public class AppUserServiceTest {
 
     private AppUser appUser;
+
+    private Product product;
 
     @Mock
     private AppUserRepository appUserRepository;
@@ -76,13 +79,13 @@ public class AppUserServiceTest {
         webshops1.add(ws1);
         webshops1.add(ws2);
         webshops2.add(ws3);
-        Product product = new Product(1L, "Termek1", components);
+        product = new Product(1L, "Termek1", components);
         Component c1 = new Component(1L,"komponens1", webshops1, List.of(product));
         Component c2 = new Component(2L, "komponens2", webshops2, List.of(product));
         components.add(c1);
         components.add(c2);
         ConfirmationToken confirmationToken = new ConfirmationToken(1L, "asdasd" ,LocalDateTime.MIN, LocalDateTime.MAX, LocalDateTime.now(), appUser);
-        appUser = new AppUser(1L, "Keresztnev", "Vezeteknev", "teszt@email.hu", "password", UserRole.ADMIN,true, confirmationToken);
+        appUser = new AppUser(1L, "Keresztnev", "Vezeteknev", "teszt@email.hu", "password", UserRole.ADMIN,false, confirmationToken);
         when(confirmationTokenRepository.findByToken(any())).thenReturn(Optional.of(confirmationToken));
     }
 
@@ -118,19 +121,63 @@ public class AppUserServiceTest {
         verify(appUserRepository).delete(appUser);
     }
 
-/*
     @Test
     public void modifyUser(){
         // Given
+        UpdateUserData updateUserData = new UpdateUserData("firstname", "tesztvezeteknev", "tesztemail@gmail.com");
         when(appUserRepository.findById(1L)).thenReturn(Optional.of(appUser));
 
         // When
-        appUserService.(1L, "valami");
+        appUserService.updateUser(1L, updateUserData);
 
         // Then
-        assertEquals(product.getName(), "valami");
-        verify(productRepository).save(product);
+        assertEquals("firstname",appUser.getFirstName());
+        assertEquals("tesztvezeteknev",appUser.getLastName());
+        assertEquals("tesztemail@gmail.com",appUser.getEmail());
+        verify(appUserRepository).save(appUser);
     }
-*/
+
+    @Test
+    public void addProductToUserTest(){
+        // Given
+        when(appUserRepository.findById(1L)).thenReturn(Optional.of(appUser));
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        appUser.setProducts(new ArrayList<>());
+
+        // When
+        appUserService.saveUserProduct(appUser.getId(), product.getId());
+
+        // Then
+        assertTrue(appUser.getProducts().contains(product));
+    }
+
+    @Test
+    public void changeUserRoleTest(){
+        UserRole userRole = UserRole.USER;
+        when(appUserRepository.findById(1L)).thenReturn(Optional.of(appUser));
+
+        appUserService.changeRole(appUser.getId(), userRole);
+
+        assertEquals(userRole, appUser.getUserRole());
+    }
+
+    @Test
+    public void encodePassword(){
+
+        appUserService.encodePasswordAndCreateConfirmationToken(appUser);
+
+        assertNotEquals("password", appUser.getPassword());
+
+    }
+
+    @Test
+    public void enableUserTest(){
+
+        appUserService.enableAppUser("tesztemail@gmail.com");
+
+        verify(appUserRepository).enableUser("tesztemail@gmail.com");
+    }
+
+
 
 }

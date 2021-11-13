@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -59,28 +60,32 @@ public class ComponentServiceTest {
     }
 
 
-
-/*    @Test
-    public void saveComponentDetailsTest() {
-        //Given
-        Component component = new Component(1L, "termek1", null, null);
-        ComponentDto componentDto = componentMapper.componentToComponentDto(component);
-
-       //When
-        when(componentService.saveComponent(componentDto)).thenReturn(component);
-        //Then
-        verify(componentRepository).save(component);
-    }*/
-
     @Test
     public void cheapestWebshopTest(){
-        
+        // Given
         when(componentRepository.findById(1L)).thenReturn(Optional.of(component));
 
+        // When
         WebshopProduct webshopProduct = componentService.getCheapestWebshopData(1L);
 
+        // Then
         assertEquals(webshopProduct, ws2);
         verify(componentRepository).findById(1L);
 
+    }
+
+    @Test
+    public void addWebshopProductToComponentTest(){
+        // Given
+        WebshopProduct ws3 = new WebshopProduct(3L, "webshop3","emag.hu", 5000);
+        when(componentRepository.findById(1L)).thenReturn(Optional.of(component));
+        when(webshopProductRepository.findById(3L)).thenReturn(Optional.of(ws3));
+        component.setWebshopProducts(new ArrayList<>());
+
+        // When
+        componentService.addWebshopProductToComponent(component.getId(),ws3.getId());
+
+        // Then
+        assertTrue(component.getWebshopProducts().contains(ws3));
     }
 }

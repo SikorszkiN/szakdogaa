@@ -61,6 +61,7 @@ protected void configure(HttpSecurity http) throws Exception {
                     .antMatchers("/registration/**").permitAll()
                     .antMatchers("/api/webshop/**").hasAuthority("ADMIN")
                     .antMatchers("/api/appuser/changerole/**").hasAuthority("ADMIN")
+                    .antMatchers("/api/appuser/delete/**").hasAuthority("ADMIN")
                     .antMatchers("/api/**").hasAnyAuthority("USER", "ADMIN");
 
            http.addFilterBefore(

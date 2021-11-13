@@ -11,4 +11,9 @@ public class UpdateWebshopProduct {
     private String name;
 
     private String link;
+
+    public UpdateWebshopProduct(String name, String link) {
+        this.name = name;
+        this.link = link;
+    }
 }

@@ -1,6 +1,6 @@
 package com.szakdoga.szakdoga.app.api.controller;
 
-import com.szakdoga.szakdoga.app.dto.AppUserDto;
+import com.szakdoga.szakdoga.app.dto.UpdateUserData;
 import com.szakdoga.szakdoga.app.exception.ApiRequestException;
 import com.szakdoga.szakdoga.app.repository.entity.AppUser;
 import com.szakdoga.szakdoga.app.repository.entity.Blacklist;
@@ -46,10 +46,11 @@ public class AppUserController {
         return ResponseEntity.ok(appUserService.saveUser(appUserDto));
     }*/
 
-    @PostMapping("{userId}/products/{productId}")
-    public void saveUserProduct(@PathVariable @Valid Long userId, @PathVariable @Valid Long productId){
+
+    @PostMapping("{appuserid}/products/{productId}")
+    public void saveUserProduct(@PathVariable @Valid Long appuserid, @PathVariable @Valid Long productId){
         log.info("Saving product to the user!");
-        appUserService.saveUserProduct(userId, productId);
+        appUserService.saveUserProduct(appuserid, productId);
     }
 
     @DeleteMapping("/delete/{appUserId}")
@@ -95,6 +96,13 @@ public class AppUserController {
         return blacklistService.addTokenToBlacklist(token);
     }
 
-
+    @PutMapping("/modify/{appuserid}")
+    public ResponseEntity<Map<String, Boolean>> updateUserData(@PathVariable @Valid Long appuserid, @RequestBody UpdateUserData updateUserData){
+        log.info("User Data changed!");
+        appUserService.updateUser(appuserid, updateUserData);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("User data changed", Boolean.TRUE);
+        return ResponseEntity.ok(response);
+    }
 
 }

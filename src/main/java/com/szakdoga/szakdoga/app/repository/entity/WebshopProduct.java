@@ -43,4 +43,10 @@ public class WebshopProduct {
         this.webshop = webshop;
     }
 
+    public WebshopProduct(Long id, String name, @Length(max = 1000) String link, int price) {
+        this.id = id;
+        this.name = name;
+        this.link = link;
+        this.price = price;
+    }
 }

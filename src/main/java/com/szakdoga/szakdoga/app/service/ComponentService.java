@@ -48,8 +48,8 @@ public class ComponentService {
 
     @Transactional
     public void addWebshopProductToComponent(Long componentId, Long webshopId){
-        Component component = componentRepository.findById(componentId).orElseThrow(()-> new ApiRequestException("Component not found!"));
-        WebshopProduct webshopProduct = webshopProductRepository.findById(webshopId).orElseThrow();
+        Component component = componentRepository.findById(componentId).orElseThrow(()-> new NoEntityException("Component not found!"));
+        WebshopProduct webshopProduct = webshopProductRepository.findById(webshopId).orElseThrow(() -> new NoEntityException("WebshopProduct not found!"));
 
         component.getWebshopProducts().add(webshopProduct);
     }
