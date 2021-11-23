@@ -2,7 +2,6 @@ package com.szakdoga.szakdoga.app.mapper;
 
 import com.szakdoga.szakdoga.app.dto.ComponentDto;
 import com.szakdoga.szakdoga.app.repository.entity.Component;
-import org.modelmapper.ModelMapper;
 
 @org.springframework.stereotype.Component
 public class ComponentMapper {
@@ -11,8 +10,6 @@ public class ComponentMapper {
         ComponentDto componentDto = new ComponentDto();
 
         componentDto.setName(component.getName());
-
-        //return modelMapper.map(component, ComponentDto.class);
 
         return componentDto;
     }

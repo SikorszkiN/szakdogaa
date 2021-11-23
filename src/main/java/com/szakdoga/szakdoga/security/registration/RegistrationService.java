@@ -41,12 +41,12 @@ public class RegistrationService {
                 request.getLastName(),
                 request.getEmail(),
                 request.getPassword(),
-                UserRole.USER);
+                UserRole.ADMIN);
 
         String token = appUserService.encodePasswordAndCreateConfirmationToken(appUser);
 
         String link = "http://localhost:8080/registration/confirm?token="+ token ;
-        emailService.sendMessage(request.getEmail(), buildEmail(request.getFirstName(), link));
+        emailService.sendMessage(request.getEmail(), buildEmail(request.getFirstName(), link), "Confirm your email!");
         return appUser;
     }
 

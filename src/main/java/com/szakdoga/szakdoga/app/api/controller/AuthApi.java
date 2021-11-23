@@ -4,7 +4,6 @@ import com.szakdoga.szakdoga.app.dto.AuthRequest;
 import com.szakdoga.szakdoga.app.repository.entity.AppUser;
 import com.szakdoga.szakdoga.app.service.AppUserService;
 import com.szakdoga.szakdoga.security.JwtTokenUtil;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

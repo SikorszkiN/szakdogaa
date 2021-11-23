@@ -1,12 +1,9 @@
 package com.szakdoga.szakdoga.app.repository.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.Nullable;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.repository.cdi.Eager;
 
 import javax.persistence.*;
 import java.util.ArrayList;

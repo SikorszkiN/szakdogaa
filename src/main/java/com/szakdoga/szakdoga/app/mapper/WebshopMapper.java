@@ -2,7 +2,6 @@ package com.szakdoga.szakdoga.app.mapper;
 
 import com.szakdoga.szakdoga.app.dto.WebshopDto;
 import com.szakdoga.szakdoga.app.repository.entity.Webshop;
-import lombok.Data;
 import org.springframework.stereotype.Component;
 
 @Component

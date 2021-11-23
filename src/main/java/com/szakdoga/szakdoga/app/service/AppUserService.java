@@ -1,17 +1,13 @@
 package com.szakdoga.szakdoga.app.service;
 
-import com.szakdoga.szakdoga.app.dto.AppUserDto;
 import com.szakdoga.szakdoga.app.dto.UpdateUserData;
 import com.szakdoga.szakdoga.app.exception.ApiRequestException;
 import com.szakdoga.szakdoga.app.exception.NoEntityException;
-import com.szakdoga.szakdoga.app.mapper.UserMapper;
+import com.szakdoga.szakdoga.app.repository.AppUserRepository;
+import com.szakdoga.szakdoga.app.repository.ProductRepository;
 import com.szakdoga.szakdoga.app.repository.entity.AppUser;
 import com.szakdoga.szakdoga.app.repository.entity.Product;
-import com.szakdoga.szakdoga.app.repository.ProductRepository;
-import com.szakdoga.szakdoga.app.repository.AppUserRepository;
 import com.szakdoga.szakdoga.app.repository.entity.UserRole;
-import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
-import com.szakdoga.szakdoga.security.registration.RegistrationRequest;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationToken;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationTokenRepository;
 import com.szakdoga.szakdoga.security.registration.token.ConfirmationTokenService;
@@ -23,10 +19,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -45,11 +41,7 @@ public class AppUserService implements UserDetailsService {
 
     private final ProductService productService;
 
-    private final ComponentService componentService;
-
     private final ProductRepository productRepository;
-
-    private final UserMapper userMapper;
 
     private final EmailService emailService;
 
@@ -117,8 +109,8 @@ public class AppUserService implements UserDetailsService {
 
         StringBuilder stringBuilder = new StringBuilder();
         for (var p : appUser.getProducts()) {
-            stringBuilder.append(p.getName()).append(" ")
-                    .append(productService.getProductPrice(p.getId()));
+            stringBuilder.append(p.getName()).append(": ")
+                    .append(productService.getProductPrice(p.getId())).append(" Ft!").append("                             ");
         }
         return stringBuilder.toString();
     }
@@ -141,8 +133,8 @@ public class AppUserService implements UserDetailsService {
         }
     }
 
-    public void sendOrderCalculation(Long appUserId, String email) {
-        emailService.sendMessage(email, orderedProductsEmail(appUserId));
+    public void sendOrderCalculation(Long appUserId, String email, String Subject) {
+        emailService.sendMessage(email, buildEmail(email, appUserId), "Calculation");
     }
 
     public void changeRole(Long appUserId, UserRole userRole) {
@@ -167,6 +159,50 @@ public class AppUserService implements UserDetailsService {
             appUser.setEmail(updateUserData.getEmail());
         }
         appUserRepository.save(appUser);
+    }
+
+    private String buildEmail(String email, Long appUserId) {
+        return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
+                "\n" +
+                "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
+                "\n" +
+                "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
+                "    <tbody><tr>\n" +
+                "      <td width=\"10\" height=\"10\" valign=\"middle\"></td>\n" +
+                "      <td>\n" +
+                "        \n" +
+                "                <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +
+                "                  <tbody><tr>\n" +
+                "                    <td bgcolor=\"#1D70B8\" width=\"100%\" height=\"10\"></td>\n" +
+                "                  </tr>\n" +
+                "                </tbody></table>\n" +
+                "        \n" +
+                "      </td>\n" +
+                "      <td width=\"10\" valign=\"middle\" height=\"10\"></td>\n" +
+                "    </tr>\n" +
+                "  </tbody></table>\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
+                "    <tbody><tr>\n" +
+                "      <td height=\"30\"><br></td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
+                "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
+                "        \n" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hi " + email + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Az alábbi kalkulációt küldték önnek: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> \"" + orderedProductsEmail(appUserId) + "\" </p></blockquote>\n" +
+                "        \n" +
+                "      </td>\n" +
+                "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "      <td height=\"30\"><br></td>\n" +
+                "    </tr>\n" +
+                "  </tbody></table><div class=\"yj6qo\"></div><div class=\"adL\">\n" +
+                "\n" +
+                "</div></div>";
     }
 
 }

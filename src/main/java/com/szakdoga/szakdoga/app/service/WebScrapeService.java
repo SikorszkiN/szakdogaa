@@ -8,7 +8,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,10 +32,10 @@ public class WebScrapeService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        var elements = Objects.requireNonNull(doc).select(webshop.getPriceSelector()); //exception
-        var element = elements.get(0);  //exception
-        var priceString = element.text();   //exception
-        price = Integer.parseInt(priceString.replaceAll("[\\D.]",""));   //exception
+        var elements = Objects.requireNonNull(doc).select(webshop.getPriceSelector());
+        var element = elements.get(0);
+        var priceString = element.text();
+        price = Integer.parseInt(priceString.replaceAll("[\\D.]",""));
         return price;
     }
 

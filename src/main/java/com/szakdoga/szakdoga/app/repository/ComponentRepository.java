@@ -12,6 +12,4 @@ public interface ComponentRepository extends JpaRepository<Component, Long> {
 
     List<Component> findAll();
 
-    //List<Component> findComponentByWe
-
 }

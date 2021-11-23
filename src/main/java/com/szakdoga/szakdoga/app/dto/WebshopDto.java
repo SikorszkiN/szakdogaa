@@ -1,6 +1,5 @@
 package com.szakdoga.szakdoga.app.dto;
 
-import com.szakdoga.szakdoga.app.repository.entity.Webshop;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

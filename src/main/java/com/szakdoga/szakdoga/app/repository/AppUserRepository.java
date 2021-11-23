@@ -17,8 +17,6 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
     List<AppUser> findAll();
 
-    //User findUserByFirstName(String name);
-
     @Transactional
     @Modifying
     @Query("UPDATE AppUser u " +

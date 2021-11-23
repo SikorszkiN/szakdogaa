@@ -2,8 +2,6 @@ package com.szakdoga.szakdoga.app.api.controller;
 
 import com.szakdoga.szakdoga.app.dto.ComponentDto;
 import com.szakdoga.szakdoga.app.repository.entity.Component;
-import com.szakdoga.szakdoga.app.repository.entity.Webshop;
-import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import com.szakdoga.szakdoga.app.service.ComponentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,23 +18,28 @@ import java.util.Map;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/component")
+@RequestMapping("/api/components")
 public class ComponentController {
 
     private final ComponentService componentService;
 
-    @PostMapping("/save")
+    @PostMapping("/add")
     public ResponseEntity<Component> saveComponent(@RequestBody ComponentDto componentDto){ //response entity tudja kezelni milyen http status kóddal tér vissza
         log.info("Saving new Component to the database!");
         return ResponseEntity.ok(componentService.saveComponent(componentDto));
     }
 
-    @GetMapping("/findall")
+    @GetMapping()
     public ResponseEntity<List<Component>> findAllComponent(){
         return ResponseEntity.ok(componentService.findAll());
     }
 
-    @PostMapping("/{componentId}/webshopproduct/{webshopproductId}")
+    @GetMapping("/{componentId}")
+    public ResponseEntity<Component> findProductById(@PathVariable Long componentId){
+        return ResponseEntity.ok(componentService.findById(componentId));
+    }
+
+    @PostMapping("/{componentId}/webshopproducts/{webshopproductId}")
     public ResponseEntity<Map<String, Boolean>> saveWebshopToComponent(@PathVariable Long componentId, @PathVariable Long webshopproductId){
         log.info("Saving Webshop Product to Component");
         componentService.addWebshopProductToComponent(componentId, webshopproductId);
@@ -45,7 +48,7 @@ public class ComponentController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/delete/{componentId}")
+    @DeleteMapping("/{componentId}")
     public ResponseEntity<Map<String, Boolean>> deleteComponent(@PathVariable @Valid Long componentId){
         log.info("Delete Component!");
         componentService.deleteComponent(componentId);
@@ -54,7 +57,7 @@ public class ComponentController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/update/{componentId}")
+    @PutMapping("/{componentId}")
     public ResponseEntity<Map<String, Boolean>> updateComponent(@PathVariable @Valid Long componentId, @RequestBody String name){
         log.info("Modify Component");
         componentService.updateComponent(componentId, name);

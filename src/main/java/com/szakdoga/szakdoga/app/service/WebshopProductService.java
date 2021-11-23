@@ -7,25 +7,18 @@ import com.szakdoga.szakdoga.app.mapper.WebshopProductMapper;
 import com.szakdoga.szakdoga.app.repository.ProductRepository;
 import com.szakdoga.szakdoga.app.repository.WebshopProductRepository;
 import com.szakdoga.szakdoga.app.repository.WebshopRepository;
-import com.szakdoga.szakdoga.app.dto.Selectors;
 import com.szakdoga.szakdoga.app.repository.entity.Component;
-import com.szakdoga.szakdoga.app.repository.entity.Product;
 import com.szakdoga.szakdoga.app.repository.entity.Webshop;
 import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.HttpStatusException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.support.CronExpression;
-import org.springframework.scheduling.support.CronSequenceGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpServerErrorException;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,15 +55,15 @@ public class WebshopProductService {
     }
 
     @Transactional
-    @Scheduled /*(cron = "0/15 * * * * *")*/(cron = "0 0 0 * * *") //Quartz
+    @Scheduled(cron = "0 0 0 * * *")
     public void refreshWebshopProductPrice(){
 
             PageRequest firstPageRequest = PageRequest.of(0, 100, Sort.by("name"));
-            var firstWebshopProductsPage = webshopProductRepository.findAll(firstPageRequest);
+            Page<WebshopProduct> firstWebshopProductsPage = webshopProductRepository.findAll(firstPageRequest);
             updateProductPrice(firstWebshopProductsPage);
             int totalPages = firstWebshopProductsPage.getTotalPages();
             IntStream.rangeClosed(1, totalPages).forEach(value -> {
-                PageRequest pageRequest = PageRequest.of(0, 100, Sort.by("name"));
+                PageRequest pageRequest = PageRequest.of(value, 100, Sort.by("name"));
                 var webshopProductsPage = webshopProductRepository.findAll(pageRequest);
                 updateProductPrice(webshopProductsPage);
             });
@@ -132,24 +125,6 @@ public class WebshopProductService {
         webshop.getWebshopProducts().add(webshopProduct);
         webshopProduct.setWebshop(webshop);
     }
-
-/*    public List<WebshopProduct> webshopProductsFromProduct(Long productId){
-        Product product = productRepository.findById(productId).orElseThrow(() -> new NoEntityException("Not found"));
-
-        List<Component> components = product.getComponents();
-
-
-      List<WebshopProduct> webshopProducts = new ArrayList<>();
-
-        for (var component : components){
-            for (WebshopProduct webshopProduct : component.getWebshopProducts()){
-                webshopProducts.add(webshopProductRepository.findById(webshopProduct.getId()).orElseThrow());
-            }
-
-        }
-
-        return webshopProducts;
-    }*/
 
     public void updateWebshopProduct(Long webshopProductId, UpdateWebshopProduct updateWebshopProduct){
         WebshopProduct webshopProduct = webshopProductRepository.findById(webshopProductId).orElseThrow(() -> new NoEntityException("Not found"));

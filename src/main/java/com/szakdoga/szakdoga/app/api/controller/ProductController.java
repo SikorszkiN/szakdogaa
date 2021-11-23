@@ -18,7 +18,7 @@ import java.util.Map;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/product")
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -28,7 +28,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.findAll());
     }
 
-    @GetMapping("/findbyid/{productId}")
+    @GetMapping("/{productId}")
     public ResponseEntity<Product> findProductById(@PathVariable Long productId){
             return ResponseEntity.ok(productService.findById(productId));
     }
@@ -44,12 +44,12 @@ public class ProductController {
         return ResponseEntity.ok(productService.saveProduct(productDto));
     }
 
-    @PostMapping("/{productId}/component/{componentId}")
+    @PostMapping("/{productId}/components/{componentId}")
     public void saveProductComponent(@PathVariable Long productId, @PathVariable Long componentId){
         productService.saveProductComponent(productId, componentId);
     }
 
-    @DeleteMapping("/delete/{productId}")
+    @DeleteMapping("/{productId}")
     public ResponseEntity<Map<String, Boolean>> deleteProduct(@PathVariable @Valid Long productId){
         log.info("Delete Product from the database!");
         productService.deleteProduct(productId);
@@ -58,7 +58,7 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/update/{productId}")
+    @PutMapping("/{productId}")
     public ResponseEntity<Map<String, Boolean>> updateProduct(@PathVariable @Valid Long productId, @RequestBody String name){
         log.info("Modify product!");
         productService.updateProduct(productId, name);

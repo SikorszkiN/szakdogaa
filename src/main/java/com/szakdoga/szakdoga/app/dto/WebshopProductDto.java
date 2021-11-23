@@ -1,7 +1,6 @@
 package com.szakdoga.szakdoga.app.dto;
 
 import lombok.Data;
-import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

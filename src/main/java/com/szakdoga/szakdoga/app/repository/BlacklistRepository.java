@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface BlacklistRepository extends JpaRepository<Blacklist, Long> {
 
     Blacklist findByToken(String token);
+
 }
+

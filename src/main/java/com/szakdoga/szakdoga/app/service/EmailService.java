@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +19,14 @@ public class EmailService {
 
     private final JavaMailSender javaMailSender;
 
-    public void sendMessage(String to, String email){
+    public void sendMessage(String to, String email, String subject){
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
             helper.setText(email,true);
             helper.setFrom(MESSAGE_FROM);
             helper.setTo(to);
-            helper.setSubject("Confirm your email");
+            helper.setSubject(subject);
             javaMailSender.send(message);
 
         } catch (Exception e){

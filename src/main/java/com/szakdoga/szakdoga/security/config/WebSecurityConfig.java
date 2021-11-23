@@ -69,33 +69,13 @@ protected void configure(HttpSecurity http) throws Exception {
                    UsernamePasswordAuthenticationFilter.class
            );
 
-
-/*       http.
-               csrf().disable().httpBasic().and()
-       .authorizeRequests()
-               .antMatchers("/registration/**").permitAll()
-               .antMatchers("/api/webshop/**").hasAuthority("ADMIN")
-               .antMatchers("/api/appuser/changerole/**").hasAuthority("ADMIN")
-       .anyRequest().authenticated().and()
-       .formLogin().permitAll()
-       .and()
-       .logout().permitAll();*/
     }
 
 @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     auth.userDetailsService(email -> appUserRepository.findByEmail(email).orElseThrow(
             () -> new NoEntityException("User :%s, not found:" +  email)));
-      //  auth.authenticationProvider(deoDaoAuthenticationProvider());
-    }
-
-/*    @Bean
-    public DaoAuthenticationProvider deoDaoAuthenticationProvider(){
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(bCryptPasswordEncoder);
-        provider.setUserDetailsService(appUserService);
-        return provider;
-    }*/
+     }
 
     @Bean
     public CorsFilter corsFilter() {

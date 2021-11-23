@@ -1,7 +1,6 @@
 package com.szakdoga.szakdoga.app.api.controller;
 
 import com.szakdoga.szakdoga.app.dto.UpdateWebshopData;
-import com.szakdoga.szakdoga.app.dto.UpdateWebshopProduct;
 import com.szakdoga.szakdoga.app.dto.WebshopDto;
 import com.szakdoga.szakdoga.app.repository.entity.Webshop;
 import com.szakdoga.szakdoga.app.service.WebshopService;
@@ -20,12 +19,12 @@ import java.util.Map;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/webshop")
+@RequestMapping("/api/webshops")
 public class WebshopController {
 
     private final WebshopService webshopService;
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<Webshop>> findAll(){
         return ResponseEntity.ok(webshopService.findAll());
     }
@@ -36,7 +35,7 @@ public class WebshopController {
         return ResponseEntity.ok(webshopService.save(webshopDto));
     }
 
-    @DeleteMapping("/delete/{webshopId}")
+    @DeleteMapping("/{webshopId}")
     public ResponseEntity<Map<String, Boolean>> deleteWebshop(@PathVariable @Valid Long webshopId){
         log.info("Delete Webshop from the database!");
         webshopService.deleteWebshop(webshopId);
@@ -45,7 +44,7 @@ public class WebshopController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/update/{webshopId}")
+    @PutMapping("/{webshopId}")
     public ResponseEntity<Map<String, Boolean>> updateWebshop(@PathVariable @Valid Long webshopId, @RequestBody @Valid UpdateWebshopData updateWebshopData){
         log.info("Delete Webshop");
         webshopService.updateWebshop(webshopId, updateWebshopData);
@@ -54,5 +53,9 @@ public class WebshopController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{webshopId}")
+    public ResponseEntity<Webshop> findProductById(@PathVariable Long webshopId){
+        return ResponseEntity.ok(webshopService.findById(webshopId));
+    }
 
 }

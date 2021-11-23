@@ -59,21 +59,6 @@ public class ComponentServiceTest {
         component = new Component(1L, "komponens1", webshops, null);
     }
 
-
-    @Test
-    public void cheapestWebshopTest(){
-        // Given
-        when(componentRepository.findById(1L)).thenReturn(Optional.of(component));
-
-        // When
-        WebshopProduct webshopProduct = componentService.getCheapestWebshopData(1L);
-
-        // Then
-        assertEquals(webshopProduct, ws2);
-        verify(componentRepository).findById(1L);
-
-    }
-
     @Test
     public void addWebshopProductToComponentTest(){
         // Given

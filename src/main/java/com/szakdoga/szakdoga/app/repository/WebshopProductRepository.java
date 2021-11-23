@@ -16,12 +16,4 @@ public interface WebshopProductRepository extends JpaRepository<WebshopProduct, 
     List<WebshopProduct> findAllByName(String name);
 
     Page<WebshopProduct> findAll(Pageable pageable);
-
-   /* @Query("select wp.*, w.delivery_price from webshop_product wp\n" +
-            "JOIN component_webshop_product cwp ON cwp.webshop_product_id = wp.id\n" +
-            "JOIN component c ON c.id = cwp.component_id\n" +
-            "JOIN webshop w ON w.id = wp.webshop_id\n" +
-            "WHERE c.\\"name\\" =  'Asus Intel Prime H510M'")
-    List<Object> findValami();*/
-
 }

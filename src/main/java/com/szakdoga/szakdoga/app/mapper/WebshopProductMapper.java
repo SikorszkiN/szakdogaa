@@ -2,7 +2,6 @@ package com.szakdoga.szakdoga.app.mapper;
 
 import com.szakdoga.szakdoga.app.dto.WebshopProductDto;
 import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
-import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +12,6 @@ public class WebshopProductMapper {
 
         webshopProductDto.setName(webshopProduct.getName());
         webshopProductDto.setLink(webshopProduct.getLink());
-       /* webshop.setPrice(webshopDto.getPrice());*/
 
         return webshopProductDto;
     }
@@ -23,7 +21,6 @@ public class WebshopProductMapper {
 
        webshopProduct.setName(webshopProductDto.getName());
        webshopProduct.setLink(webshopProductDto.getLink());
-       /*webshop.setPrice(webshopDto.getPrice());*/
 
        return webshopProduct;
     }

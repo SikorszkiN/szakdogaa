@@ -45,7 +45,7 @@ public class RegistrationServiceTest {
 
     @Test
     public void registrationEmailTeszt(){
-        String email = "teszt@email.hu";
+        String email = "teszt@a.fds@email.hu";
         boolean isValid = RegistrationService.isValidEmail(email);
         assertTrue(isValid);
     }

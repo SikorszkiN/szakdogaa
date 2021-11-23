@@ -24,14 +24,14 @@ import java.util.Map;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/appuser")
+@RequestMapping("/api/appusers")
 public class AppUserController {
 
     private final AppUserService appUserService;
 
     private final BlacklistService blacklistService;
 
-    @GetMapping("/all")
+    @GetMapping
     public List<AppUser> getAllUsers(){
         return appUserService.findAll();
     }
@@ -41,19 +41,13 @@ public class AppUserController {
         return ResponseEntity.ok(appUserService.findById(appUserId));
     }
 
-/*    @PostMapping("/save")
-    public ResponseEntity<AppUser> saveUser(@RequestBody @Valid AppUserDto appUserDto){
-        return ResponseEntity.ok(appUserService.saveUser(appUserDto));
-    }*/
-
-
     @PostMapping("{appuserid}/products/{productId}")
     public void saveUserProduct(@PathVariable @Valid Long appuserid, @PathVariable @Valid Long productId){
         log.info("Saving product to the user!");
         appUserService.saveUserProduct(appuserid, productId);
     }
 
-    @DeleteMapping("/delete/{appUserId}")
+    @DeleteMapping("/{appUserId}")
     public ResponseEntity<Map<String, Boolean>> deleteUser(@PathVariable @Valid Long appUserId){
         log.info("Delete user from the database!");
         appUserService.deleteUser(appUserId);
@@ -62,14 +56,6 @@ public class AppUserController {
         return ResponseEntity.ok(response);
     }
 
-        @GetMapping("/email/{appUserId}")
-        public ResponseEntity<Map<String, Boolean>> sendCalculation(@PathVariable @Valid Long appUserId, @RequestBody String email){
-            log.info("Sending email!");
-            appUserService.sendOrderCalculation(appUserId, email);
-            Map<String, Boolean> response = new HashMap<>();
-            response.put("Email sent", Boolean.TRUE);
-            return ResponseEntity.ok(response);
-        }
 
     @PostMapping("/changerole/{appUserId}")
     public ResponseEntity<Map<String, Boolean>> changeRole(@PathVariable @Valid Long appUserId, @RequestBody String role){
@@ -96,7 +82,7 @@ public class AppUserController {
         return blacklistService.addTokenToBlacklist(token);
     }
 
-    @PutMapping("/modify/{appuserid}")
+    @PutMapping("/{appuserid}")
     public ResponseEntity<Map<String, Boolean>> updateUserData(@PathVariable @Valid Long appuserid, @RequestBody UpdateUserData updateUserData){
         log.info("User Data changed!");
         appUserService.updateUser(appuserid, updateUserData);

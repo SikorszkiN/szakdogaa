@@ -1,18 +1,13 @@
 package com.szakdoga.szakdoga.app.service;
 
 import com.szakdoga.szakdoga.app.dto.UpdateWebshopData;
-import com.szakdoga.szakdoga.app.dto.UpdateWebshopProduct;
 import com.szakdoga.szakdoga.app.dto.WebshopDto;
-import com.szakdoga.szakdoga.app.exception.ApiRequestException;
 import com.szakdoga.szakdoga.app.exception.NoEntityException;
 import com.szakdoga.szakdoga.app.mapper.WebshopMapper;
-import com.szakdoga.szakdoga.app.repository.WebshopProductRepository;
 import com.szakdoga.szakdoga.app.repository.WebshopRepository;
 import com.szakdoga.szakdoga.app.repository.entity.Webshop;
-import com.szakdoga.szakdoga.app.repository.entity.WebshopProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
